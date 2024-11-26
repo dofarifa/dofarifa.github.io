@@ -11,6 +11,12 @@
         <content type="html"><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">  <script id="hbeData" type="hbeData" data-hmacdigest="468d10e4aed2adeac886b4938ac3ecafdf517d1e7509f57291ff4a96469b5d66">81ee118dc7ad278eef9d542d1756be0db6ac9d9ea011fefac63ff693005e58d36ebb5d648733e49092e91de4a1473b96fd65f91ec4bab34b7bdbb975938bf47ec413df9a8562dcdda613fd04a77dfc88d019616737399ebbe523367b9caec57e1f43f1dfa2bd2998985899d9fd9e19a0df31b06bcbd6cbaec4963cd65b0828500d8a75e566a0b9b582f9a6e50a8d4012892f24473637425f067fba1582c83b9f</script>  <div class="hbe hbe-content">    <div class="hbe hbe-input hbe-input-default">      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">        <span class="hbe hbe-input-label-content hbe-input-label-content-default">你的生日</span>      </label>    </div>  </div></div><script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
       
       
+      <categories>
+          
+          <category> 生活日常 </category>
+          
+      </categories>
+      
       
     </entry>
     
