@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>title</title>
+      <link href="/2025/04/24/%E5%AE%9E%E9%AA%8C/"/>
+      <url>/2025/04/24/%E5%AE%9E%E9%AA%8C/</url>
+      
+        <content type="html"><![CDATA[<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="function">Complex <span class="title">c1</span><span class="params">(<span class="number">1</span>,<span class="number">2</span>)</span>,<span class="title">c2</span><span class="params">(<span class="number">2</span>)</span>,<span class="title">c3</span><span class="params">(c1)</span>,<span class="title">c4</span><span class="params">(<span class="number">1</span>,<span class="number">3</span>)</span>,<span class="title">c5</span><span class="params">(<span class="number">4</span>,<span class="number">1</span>)</span></span>;</span><br><span class="line">c1=c1+c2+c3;</span><br><span class="line">std::cout&lt;&lt;c1&lt;&lt;std::endl;</span><br><span class="line">c2=c3;</span><br><span class="line">std::cout&lt;&lt;c2&lt;&lt;std::endl;</span><br><span class="line">c3=c2-c1;</span><br><span class="line">std::cout&lt;&lt;c3&lt;&lt;std::endl;</span><br><span class="line">c4+=(c4-c1);</span><br><span class="line">std::cout&lt;&lt;c4&lt;&lt;std::endl;</span><br><span class="line">c5=c4+(c3<span class="number">+4</span>);</span><br><span class="line">std::cout&lt;&lt;c5&lt;&lt;std::endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>一直在一起</title>
       <link href="/2025/04/22/%E4%B8%80%E7%9B%B4%E5%9C%A8%E4%B8%80%E8%B5%B7/"/>
       <url>/2025/04/22/%E4%B8%80%E7%9B%B4%E5%9C%A8%E4%B8%80%E8%B5%B7/</url>
