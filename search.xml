@@ -8,7 +8,7 @@
       <link href="/2025/08/13/%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/"/>
       <url>/2025/08/13/%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90/</url>
       
-        <content type="html"><![CDATA[<h3 id="Freertos任务"><a href="#Freertos任务" class="headerlink" title="Freertos任务"></a>Freertos任务</h3><p>总共执行四个任务，三个底盘的任务和一个测试的任务，分别为<strong>chasis_task.cpp</strong>,<strong>my_test_task.cpp</strong>,<strong>communicate_task.cpp</strong>,<strong>detect_task.cpp</strong>。下面分别从每个任务入手分析代码，先从<strong>chasis_task.cpp</strong>入手，在文件<strong>chasis.cpp</strong>种声明了类Chasis的全局实例对象，即<strong>chasis</strong>, 在任务chasis_task中先执行初始化即init():</p><h4 id="chasis-init-函数："><a href="#chasis-init-函数：" class="headerlink" title="chasis::init()函数："></a>chasis::init()函数：</h4><p>先huo</p>]]></content>
+        <content type="html"><![CDATA[<h3 id="Freertos任务"><a href="#Freertos任务" class="headerlink" title="Freertos任务"></a>Freertos任务</h3><p>总共执行四个任务，三个底盘的任务和一个测试的任务，分别为<strong>chasis_task.cpp</strong>,<strong>my_test_task.cpp</strong>,<strong>communicate_task.cpp</strong>,<strong>detect_task.cpp</strong>。下面分别从每个任务入手分析代码，先从<strong>chasis_task.cpp</strong>入手，在文件<strong>chasis.cpp</strong>种声明了类Chasis的全局实例对象，即<strong>chasis</strong>, 在任务chasis_task中先执行初始化即init():</p><h4 id="chasis-init-函数："><a href="#chasis-init-函数：" class="headerlink" title="chasis::init()函数："></a>chasis::init()函数：</h4><p>先获取遥控器指针，通过代码：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">chassis_RC = remote_control.get_remote_control_point();</span><br><span class="line">last_chassis_RC = remote_control.get_last_remote_control_point();</span><br></pre></td></tr></table></figure><p>然后设置模式，设置初始的模式为<strong>CHASSIS_ZERO_FORCE</strong></p>]]></content>
       
       
       <categories>
