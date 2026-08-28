@@ -1,6 +1,7 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 
 <header class="site-header">
@@ -13,6 +14,7 @@ import HeaderLink from './HeaderLink.astro';
 			<HeaderLink href="/">首页</HeaderLink>
 			<HeaderLink href="/blog">文章</HeaderLink>
 			<HeaderLink href="/about">关于</HeaderLink>
+			<ThemeToggle />
 			<a class="rss-link" href="/rss.xml" aria-label="RSS 订阅" title="RSS 订阅">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3Zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V9Zm1.5 7A2.5 2.5 0 1 1 4 18.5 2.5 2.5 0 0 1 6.5 16Z" /></svg>
 			</a>

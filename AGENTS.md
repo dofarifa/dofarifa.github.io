@@ -14,6 +14,10 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 - Keep the project structure conventional, organized, and consistent with the responsibilities of the existing directories.
 - Delete temporary test files and one-off test scripts immediately after use. Keep them only when they are intentionally part of the project's maintained test suite.
 
+## Git Workflow
+
+- When pushing changes to a remote repository, write commit messages and any related descriptions in Chinese.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
