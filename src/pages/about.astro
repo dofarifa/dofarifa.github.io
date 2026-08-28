@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+---
+
+<BaseLayout title={`关于 · ${SITE_TITLE}`} description="关于这个博客和它的作者。">
+	<main class="shell about">
+		<section class="about-intro">
+			<h1>你好，我是<br />{SITE_AUTHOR}。</h1>
+			<p class="lead">一个喜欢把问题拆开、把想法写下来的普通人。</p>
+		</section>
+		<section class="about-grid">
+			<div class="portrait" aria-hidden="true"><span>保持<br />好奇</span></div>
+			<div class="about-copy prose">
+				<h2>关于这里</h2>
+				<p>这里是我的个人数字花园。我会记录做项目时遇到的问题、读书后的思考，以及生活中那些容易被忽略的小事。</p>
+				<p>我相信写作不是为了显得已经想明白，而是为了在文字里慢慢靠近答案。文章不会追逐更新频率，但会尽量保持真实、有用和经得起回看。</p>
+				<h2>联系我</h2>
+				<p>你可以通过 RSS 订阅更新。待你填入 GitHub 用户名或邮箱后，也可以在这里加入自己的联系方式。</p>
+				<a class="button button-primary" href="/rss.xml">订阅 RSS</a>
+			</div>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	.about { padding-block: 6rem; }
+	.about-intro h1 { margin: 0 0 1.5rem; font-size: clamp(4rem, 9vw, 6rem); letter-spacing: -.04em; }
+	.lead { color: var(--muted); font-size: 1.15rem; }
+	.about-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: clamp(3rem, 8vw, 8rem); align-items: start; margin-top: 6rem; }
+	.portrait { position: sticky; top: 7rem; display: grid; aspect-ratio: 4 / 5; place-items: center; border-radius: 2rem; background: var(--surface-lilac); color: var(--accent-ink); box-shadow: var(--shadow); }
+	.portrait span { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.8rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.1; text-align: center; transform: rotate(-4deg); }
+	.about-copy { max-width: 42rem; padding: clamp(2rem, 5vw, 4rem); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow); }
+	.about-copy h2:first-child { margin-top: 0; }
+	.about-copy .button { margin-top: 1rem; }
+	@media (max-width: 720px) { .about { padding-block: 4rem; } .about-grid { grid-template-columns: 1fr; margin-top: 4rem; } .portrait { position: relative; top: auto; width: min(20rem, 80vw); margin: 0 auto; } }
+</style>

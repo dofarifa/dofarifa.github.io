@@ -1,0 +1,45 @@
+---
+import { SITE_TITLE } from '../consts';
+import HeaderLink from './HeaderLink.astro';
+---
+
+<header class="site-header">
+	<nav class="shell nav" aria-label="主导航">
+		<a class="brand" href="/" aria-label={`${SITE_TITLE}首页`}>
+			<span class="brand-mark" aria-hidden="true">k</span>
+			<span>{SITE_TITLE}</span>
+		</a>
+		<div class="nav-links">
+			<HeaderLink href="/">首页</HeaderLink>
+			<HeaderLink href="/blog">文章</HeaderLink>
+			<HeaderLink href="/about">关于</HeaderLink>
+			<a class="rss-link" href="/rss.xml" aria-label="RSS 订阅" title="RSS 订阅">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3Zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V9Zm1.5 7A2.5 2.5 0 1 1 4 18.5 2.5 2.5 0 0 1 6.5 16Z" /></svg>
+			</a>
+		</div>
+	</nav>
+</header>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		padding-top: .7rem;
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 92%, transparent) 65%, transparent);
+		backdrop-filter: blur(18px);
+	}
+	.nav { display: flex; min-height: 4.25rem; align-items: center; justify-content: space-between; gap: 2rem; padding-inline: 1rem; border: 1px solid var(--line); border-radius: var(--radius-card); background: color-mix(in srgb, var(--surface) 94%, transparent); }
+	.brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--ink); font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em; text-decoration: none; }
+	.brand-mark { display: grid; width: 2.15rem; height: 2.15rem; place-items: center; border-radius: .75rem; background: var(--accent-soft); color: var(--accent-ink); font-size: 1rem; font-weight: 800; }
+	.nav-links { display: flex; align-items: center; gap: .2rem; }
+	.rss-link { display: grid; width: 2.4rem; height: 2.4rem; margin-left: .25rem; place-items: center; border-radius: 50%; color: var(--muted); transition: .2s ease; }
+	.rss-link:hover { background: var(--accent-soft); color: var(--accent-ink); }
+	.rss-link svg { width: 1rem; fill: currentColor; }
+	@media (max-width: 540px) {
+		.site-header { padding-top: .5rem; }
+		.nav { min-height: 3.75rem; gap: .5rem; padding-inline: .65rem; }
+		.brand > span:last-child { display: none; }
+		.nav-links { gap: 0; }
+	}
+</style>

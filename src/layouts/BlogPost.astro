@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import BaseLayout from './BaseLayout.astro';
+
+type Props = CollectionEntry<'blog'>['data'];
+const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} image={heroImage}>
+	<main>
+		<article>
+			<header class="article-header shell">
+				<a class="back-link" href="/blog">← 返回文章</a>
+				<div class="article-meta"><FormattedDate date={pubDate} />{tags.length > 0 && <span>·</span>}{tags.map((tag) => <span>#{tag}</span>)}</div>
+				<h1>{title}</h1>
+				<p>{description}</p>
+				{updatedDate && <p class="updated">最后更新于 <FormattedDate date={updatedDate} /></p>}
+			</header>
+			{heroImage && <div class="hero-image shell"><Image width={1180} height={650} src={heroImage} alt="" /></div>}
+			<div class="prose article-body"><slot /></div>
+			<footer class="article-end">
+				<span aria-hidden="true">✦</span>
+				<p>感谢你读到这里。</p>
+				<a href="/blog">继续阅读其他文章 →</a>
+			</footer>
+		</article>
+	</main>
+</BaseLayout>
+
+<style>
+	.article-header { max-width: 880px; margin-top: 2rem; padding: clamp(3rem, 7vw, 5rem); border-radius: 2rem; background: var(--surface-peach); text-align: center; }
+	.back-link { display: inline-block; margin-bottom: 3rem; color: var(--muted); font-size: .82rem; text-decoration: none; }
+	.article-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; color: var(--accent); font-size: .78rem; font-weight: 700; }
+	.article-header h1 { margin: 1.25rem auto; font-size: clamp(3rem, 7vw, 6rem); letter-spacing: -.04em; }
+	.article-header > p:not(.updated) { max-width: 42rem; margin: 0 auto; color: var(--muted); font-size: 1.1rem; line-height: 1.8; }
+	.updated { color: var(--muted); font-size: .75rem; font-style: italic; }
+	.hero-image { overflow: hidden; max-height: 42rem; margin-top: 1.5rem; border-radius: 2rem; }
+	.hero-image :global(img) { width: 100%; height: 100%; object-fit: cover; }
+	.article-body { width: min(800px, calc(100% - 2rem)); margin: 3rem auto; padding: clamp(2rem, 5vw, 4rem); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow); }
+	.article-end { width: min(800px, calc(100% - 2rem)); margin: 3rem auto 0; padding: 2.5rem; border-radius: var(--radius-card); background: var(--surface-mint); text-align: center; }
+	.article-end span { color: var(--accent); font-size: 1.5rem; }
+	.article-end p { margin: .7rem 0; color: var(--muted); }
+	.article-end a { font-size: .85rem; font-weight: 700; text-decoration: none; }
+	@media (max-width: 640px) { .article-header { width: calc(100% - 2rem); margin-top: 1rem; padding: 3rem 1.25rem; } .article-header h1 { font-size: 3.1rem; } .hero-image { width: calc(100% - 2rem); border-radius: var(--radius-card); } .article-body { margin-block: 1rem; padding: 2rem 1.25rem; } .article-end { margin-top: 1rem; } }
+</style>
