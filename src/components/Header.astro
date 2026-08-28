@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
-import { SITE_TAGLINE, SITE_TITLE } from '../consts';
+import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import HitokotoCard from './HitokotoCard.astro';
 import SearchDialog from './SearchDialog.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
@@ -56,13 +57,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		</div>
 	</nav>
 
-	<div class="shell notice-bar">
-		<span>此刻</span>
-		<p>{SITE_TAGLINE}</p>
-		<a href="/blog" aria-label="前往文章列表">
-			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
-		</a>
-	</div>
+	<HitokotoCard />
 </header>
 
 <SearchDialog posts={searchPosts} />
@@ -127,12 +122,6 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 	.tool-button:hover, .mobile-menu summary:hover { background: var(--accent-soft); color: var(--accent-ink); transform: translateY(-1px); }
 	.tool-button svg, .mobile-menu summary svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 	.rss-link svg { fill: currentColor; stroke: none; }
-	.notice-bar { display: grid; min-height: 3rem; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; margin-top: .5rem; padding: .45rem .75rem .45rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-small); background: color-mix(in srgb, var(--surface) 90%, transparent); }
-	.notice-bar > span { color: var(--accent-ink); font-size: .78rem; font-weight: 700; }
-	.notice-bar p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.45; text-align: center; }
-	.notice-bar a { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: var(--ink); color: var(--surface); }
-	.notice-bar a:hover { background: var(--accent); }
-	.notice-bar svg { width: .9rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
 	.mobile-menu { position: relative; display: none; }
 	.mobile-menu summary { list-style: none; }
 	.mobile-menu summary::-webkit-details-marker { display: none; }
@@ -149,7 +138,5 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		.nav { min-height: 3.75rem; gap: .35rem; padding-inline: .55rem; }
 		.header-tools { gap: 0; }
 		.header-tools > .tool-button, .header-tools > :global(.theme-toggle), .mobile-menu summary { width: 2.25rem; height: 2.25rem; }
-		.notice-bar { gap: .6rem; padding-left: .8rem; }
-		.notice-bar p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	}
 </style>
