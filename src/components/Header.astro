@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { SITE_ICON, SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
-import MusicPlaylist from './MusicPlaylist.astro';
 import SearchDialog from './SearchDialog.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
@@ -29,6 +28,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		<div class="nav-links desktop-nav">
 			<HeaderLink href="/">首页</HeaderLink>
 			<HeaderLink href="/blog">文章</HeaderLink>
+			<HeaderLink href="/music">音乐</HeaderLink>
 			<HeaderLink href="/about">关于</HeaderLink>
 		</div>
 
@@ -39,7 +39,6 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 			<button class="tool-button" type="button" data-search-open aria-label="搜索文章" title="搜索文章">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.2 4.2" /></svg>
 			</button>
-			<MusicPlaylist />
 			<ThemeToggle />
 			<a class="tool-button rss-link" href="/rss.xml" aria-label="RSS 订阅" title="RSS 订阅">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3Zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V9Zm1.5 7A2.5 2.5 0 1 1 4 18.5 2.5 2.5 0 0 1 6.5 16Z" /></svg>
@@ -52,6 +51,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 				<div class="mobile-menu-panel">
 					<HeaderLink href="/">首页</HeaderLink>
 					<HeaderLink href="/blog">文章</HeaderLink>
+					<HeaderLink href="/music">音乐</HeaderLink>
 					<HeaderLink href="/about">关于</HeaderLink>
 					<a href="/rss.xml">RSS 订阅</a>
 				</div>

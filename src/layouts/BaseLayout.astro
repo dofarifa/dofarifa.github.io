@@ -9,9 +9,10 @@ interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata;
+	designContract?: string;
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, designContract } = Astro.props;
 ---
 
 <!doctype html>
@@ -20,6 +21,7 @@ const { title, description, image } = Astro.props;
 		<BaseHead title={title} description={description} image={image} />
 	</head>
 	<body>
+		{designContract && <Fragment set:html={designContract} />}
 		<Header />
 		<slot />
 		<Footer />

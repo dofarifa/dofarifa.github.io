@@ -1,0 +1,278 @@
+---
+import {
+	MUSIC_BACKGROUND_IMAGE,
+	MUSIC_BACKGROUND_VIDEO,
+	NETEASE_PLAYLIST_ID,
+} from '../consts';
+
+const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`;
+---
+
+<section
+	class="music-player"
+	data-music-player
+	data-playlist-id={NETEASE_PLAYLIST_ID}
+	data-custom-background={MUSIC_BACKGROUND_IMAGE}
+	data-has-background-video={Boolean(MUSIC_BACKGROUND_VIDEO)}
+	data-mobile-pane="lyrics"
+	aria-label="音乐播放器"
+>
+	<div class="player-backdrop" data-player-backdrop aria-hidden="true"></div>
+	{MUSIC_BACKGROUND_VIDEO && (
+		<video class="player-background-video" src={MUSIC_BACKGROUND_VIDEO} autoplay muted loop playsinline aria-hidden="true"></video>
+	)}
+	<div class="player-shade" aria-hidden="true"></div>
+
+	<div class="player-surface">
+		<header class="player-heading">
+			<div>
+				<h1>音乐</h1>
+				<p data-player-summary>正在读取你的网易云收藏</p>
+			</div>
+			<a href={playlistUrl} target="_blank" rel="noreferrer">
+				在网易云打开
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5M19 14v5H5V5h5" /></svg>
+			</a>
+		</header>
+
+		<div class="mobile-pane-tabs" aria-label="播放器内容切换">
+			<button type="button" data-pane-target="playlist">歌单</button>
+			<button type="button" data-pane-target="lyrics" aria-pressed="true">歌词</button>
+		</div>
+
+		<div class="player-body">
+			<section class="playlist-pane" aria-labelledby="playlist-title">
+				<div class="pane-heading">
+					<h2 id="playlist-title">我的歌单</h2>
+					<span data-track-count>0 首</span>
+				</div>
+				<label class="playlist-search">
+					<span class="sr-only">搜索歌单</span>
+					<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.2 4.2" /></svg>
+					<input type="search" data-playlist-search placeholder="搜索歌曲或歌手" autocomplete="off" />
+				</label>
+				<div class="track-list" data-track-list></div>
+				<p class="empty-search" data-empty-search hidden>没有找到匹配的歌曲</p>
+			</section>
+
+			<section class="lyrics-pane" aria-labelledby="lyrics-title">
+				<div class="lyrics-heading">
+					<div class="current-cover" data-lyric-cover aria-hidden="true"></div>
+					<div>
+						<h2 id="lyrics-title" data-lyric-title>准备播放</h2>
+						<p data-lyric-author>选择一首歌开始</p>
+					</div>
+				</div>
+				<div class="lyrics-scroll" data-lyrics-scroll>
+					<p class="lyrics-placeholder">歌词将在这里随播放进度滚动</p>
+				</div>
+				<p class="sr-only" data-active-lyric role="status" aria-live="polite"></p>
+			</section>
+
+			<div class="player-state" data-player-state role="status">
+				<span class="state-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+				<strong data-state-title>正在加载歌单</strong>
+				<p data-state-message>第一次读取可能需要一点时间</p>
+				<button type="button" data-player-retry hidden>重新加载</button>
+			</div>
+		</div>
+
+		<footer class="player-controls">
+			<div class="now-playing">
+				<div class="now-cover" data-now-cover aria-hidden="true"></div>
+				<div>
+					<strong data-now-title>尚未播放</strong>
+					<span data-now-author>网易云音乐</span>
+				</div>
+			</div>
+
+			<div class="control-center">
+				<div class="transport-controls">
+					<button class="icon-button" type="button" data-repeat-button disabled aria-label="切换循环模式" aria-pressed="false" title="列表循环">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l3 3-3 3M3 11V9a4 4 0 0 1 4-4h13M7 22l-3-3 3-3m14-3v2a4 4 0 0 1-4 4H4" /></svg>
+						<span class="repeat-one" data-repeat-one hidden>1</span>
+					</button>
+					<button class="icon-button" type="button" data-previous-button disabled aria-label="上一首" title="上一首">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 6l-8 6 8 6V6Z" /></svg>
+					</button>
+					<button class="play-button" type="button" data-play-button disabled aria-label="播放">
+						<svg data-play-icon viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" /></svg>
+						<svg data-pause-icon viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M8 5v14M16 5v14" /></svg>
+					</button>
+					<button class="icon-button" type="button" data-next-button disabled aria-label="下一首" title="下一首">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 6l8 6-8 6V6Z" /></svg>
+					</button>
+					<button class="icon-button" type="button" data-shuffle-button disabled aria-label="随机播放" aria-pressed="false" title="随机播放">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" /></svg>
+					</button>
+				</div>
+				<div class="timeline">
+					<time data-current-time>0:00</time>
+					<input type="range" data-progress min="0" max="100" value="0" step="0.1" disabled aria-label="播放进度" />
+					<time data-duration>0:00</time>
+				</div>
+			</div>
+
+			<div class="volume-control">
+				<button class="icon-button" type="button" data-mute-button disabled aria-label="静音" title="静音">
+					<svg data-volume-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h4l5-4v14l-5-4H5V9Zm12 0a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></svg>
+					<svg data-muted-icon viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M5 9h4l5-4v14l-5-4H5V9Zm12 1 4 4m0-4-4 4" /></svg>
+				</button>
+				<input type="range" data-volume min="0" max="1" value="0.65" step="0.01" disabled aria-label="音量" />
+			</div>
+	</footer>
+	</div>
+
+	<p class="player-notice" data-player-notice role="status" aria-live="polite"></p>
+	<audio data-audio preload="metadata"></audio>
+</section>
+
+<script src="../scripts/music-player.ts"></script>
+
+<style>
+	.music-player {
+		position: relative;
+		overflow: hidden;
+		height: min(50rem, calc(100vh - 7.5rem));
+		min-height: 40rem;
+		border-radius: var(--radius-card);
+		background: var(--surface-lilac);
+		box-shadow: var(--shadow-raised);
+		isolation: isolate;
+	}
+	.player-backdrop, .player-background-video, .player-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+	.player-backdrop { z-index: -3; background: var(--surface-lilac) center / cover no-repeat; filter: blur(32px) saturate(.9); opacity: .72; transform: scale(1.12); transition: background-image .7s cubic-bezier(.22, 1, .36, 1); }
+	.player-background-video { z-index: -3; object-fit: cover; }
+	.player-shade { z-index: -2; background: color-mix(in srgb, var(--paper) 76%, transparent); }
+	.player-surface { display: grid; height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; background: color-mix(in srgb, var(--surface) 34%, transparent); backdrop-filter: blur(20px); }
+	.player-heading { display: flex; min-height: 5.4rem; align-items: center; justify-content: space-between; gap: 2rem; padding: 1.2rem 1.5rem; border-bottom: 1px solid color-mix(in srgb, var(--line) 78%, transparent); }
+	.player-heading h1 { margin: 0; font-size: 1.55rem; letter-spacing: -.03em; }
+	.player-heading p { margin: .25rem 0 0; color: var(--muted); font-size: .75rem; line-height: 1.45; }
+	.player-heading a { display: inline-flex; min-height: 2.5rem; align-items: center; gap: .4rem; padding: .55rem .75rem; border-radius: .75rem; color: var(--muted); font-size: .75rem; font-weight: 650; text-decoration: none; }
+	.player-heading a:hover { background: var(--accent-soft); color: var(--accent-ink); }
+	.player-heading svg, .playlist-search svg, .icon-button svg, .play-button svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+	.player-heading svg { width: 1rem; }
+	.mobile-pane-tabs { display: none; }
+	.player-body { position: relative; display: grid; min-height: 0; grid-template-columns: minmax(15rem, .78fr) minmax(0, 1.55fr); }
+	.playlist-pane, .lyrics-pane { min-width: 0; min-height: 0; }
+	.playlist-pane { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; padding: 1.2rem; border-right: 1px solid color-mix(in srgb, var(--line) 78%, transparent); }
+	.pane-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+	.pane-heading h2 { margin: 0; font-size: 1rem; }
+	.pane-heading span { color: var(--muted); font-size: .68rem; font-variant-numeric: tabular-nums; }
+	.playlist-search { display: flex; height: 2.55rem; align-items: center; gap: .55rem; margin-top: .85rem; padding: 0 .75rem; border-radius: .8rem; background: color-mix(in srgb, var(--surface) 72%, transparent); }
+	.playlist-search svg { width: 1rem; flex: none; color: var(--muted); }
+	.playlist-search input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: .76rem; }
+	.playlist-search input::placeholder { color: color-mix(in srgb, var(--muted) 86%, transparent); }
+	.track-list { overflow-y: auto; min-height: 0; margin-top: .75rem; padding-right: .25rem; scrollbar-gutter: stable; }
+	.track-list :global(.track-item) { display: grid; width: 100%; min-height: 3.35rem; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; gap: .45rem; padding: .45rem .55rem; border: 0; border-radius: .75rem; background: transparent; color: var(--ink); cursor: pointer; text-align: left; }
+	.track-list :global(.track-item:hover) { background: color-mix(in srgb, var(--surface) 66%, transparent); }
+	.track-list :global(.track-item[aria-current='true']) { background: var(--accent-soft); color: var(--accent-ink); }
+	.track-list :global(.track-index) { color: var(--muted); font-size: .65rem; font-variant-numeric: tabular-nums; text-align: center; }
+	.track-list :global(.track-copy) { overflow: hidden; min-width: 0; }
+	.track-list :global(.track-title), .track-list :global(.track-author) { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.track-list :global(.track-title) { font-size: .76rem; font-weight: 650; }
+	.track-list :global(.track-author) { margin-top: .12rem; color: var(--muted); font-size: .64rem; }
+	.empty-search { margin: 1rem 0 0; color: var(--muted); font-size: .72rem; text-align: center; }
+	.lyrics-pane { display: grid; grid-template-rows: auto minmax(0, 1fr); padding: 1.5rem clamp(1.5rem, 4vw, 3rem); }
+	.lyrics-heading { display: flex; align-items: center; gap: .9rem; padding-bottom: 1rem; }
+	.current-cover { width: 3.35rem; height: 3.35rem; flex: none; border-radius: .9rem; background: var(--surface-lilac) center / cover no-repeat; box-shadow: var(--shadow); }
+	.lyrics-heading h2 { overflow: hidden; max-width: min(32rem, 48vw); margin: 0; font-size: clamp(1.2rem, 2.2vw, 1.8rem); letter-spacing: -.025em; text-overflow: ellipsis; white-space: nowrap; }
+	.lyrics-heading p { margin: .3rem 0 0; color: var(--muted); font-size: .75rem; }
+	.lyrics-scroll { overflow-y: auto; min-height: 0; padding: clamp(4rem, 10vh, 7rem) 1rem; scroll-behavior: smooth; scrollbar-gutter: stable; text-align: center; }
+	.lyrics-scroll :global(.lyric-line) { display: block; width: fit-content; max-width: 38rem; margin: 0 auto; padding: .48rem .7rem; border: 0; border-radius: .65rem; background: transparent; color: color-mix(in srgb, var(--muted) 78%, transparent); cursor: pointer; font-size: clamp(.82rem, 1.3vw, 1rem); line-height: 1.6; transition: color .25s ease, transform .25s ease, background-color .25s ease; }
+	.lyrics-scroll :global(.lyric-line:hover) { color: var(--ink); }
+	.lyrics-scroll :global(.lyric-line.active) { background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--ink); font-weight: 700; transform: scale(1.035); }
+	.lyrics-placeholder { margin: 0; color: var(--muted); font-size: .85rem; }
+	.player-state { position: absolute; z-index: 3; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; background: color-mix(in srgb, var(--surface) 86%, transparent); text-align: center; }
+	.player-state[hidden] { display: none; }
+	.player-state strong { margin-top: .8rem; font-size: 1rem; }
+	.player-state p { max-width: 30rem; margin: .35rem 0 0; color: var(--muted); font-size: .76rem; }
+	.player-state button { min-height: 2.5rem; margin-top: 1rem; padding: .55rem .85rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); color: var(--ink); cursor: pointer; font-size: .75rem; font-weight: 650; }
+	.state-equalizer { display: inline-flex; height: 1.5rem; align-items: flex-end; gap: .18rem; }
+	.state-equalizer i { width: .18rem; height: 40%; border-radius: .2rem; background: var(--accent); animation: state-level .9s cubic-bezier(.22, 1, .36, 1) infinite alternate; }
+	.state-equalizer i:nth-child(2) { height: 90%; animation-delay: -.5s; }
+	.state-equalizer i:nth-child(3) { height: 65%; animation-delay: -.25s; }
+	.state-equalizer i:nth-child(4) { height: 78%; animation-delay: -.65s; }
+	.music-player[data-state='error'] .state-equalizer i { animation-play-state: paused; }
+	.player-controls { display: grid; min-height: 7.2rem; grid-template-columns: minmax(12rem, .9fr) minmax(22rem, 1.35fr) minmax(9rem, .65fr); align-items: center; gap: 1.5rem; padding: 1rem 1.4rem; border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent); background: color-mix(in srgb, var(--surface) 54%, transparent); }
+	.now-playing { display: flex; min-width: 0; align-items: center; gap: .8rem; }
+	.now-cover { width: 3.2rem; height: 3.2rem; flex: none; border-radius: .85rem; background: var(--surface-lilac) center / cover no-repeat; }
+	.now-playing > div:last-child { overflow: hidden; min-width: 0; }
+	.now-playing strong, .now-playing span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.now-playing strong { font-size: .78rem; }
+	.now-playing span { margin-top: .15rem; color: var(--muted); font-size: .66rem; }
+	.control-center { display: grid; gap: .55rem; }
+	.transport-controls { display: flex; align-items: center; justify-content: center; gap: .38rem; }
+	.icon-button, .play-button { position: relative; display: grid; padding: 0; border: 0; place-items: center; border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; }
+	.icon-button { width: 2.3rem; height: 2.3rem; }
+	.icon-button:hover:not(:disabled) { background: color-mix(in srgb, var(--surface) 68%, transparent); }
+	.icon-button.active { background: var(--accent-soft); color: var(--accent-ink); }
+	.icon-button svg { width: 1rem; height: 1rem; }
+	.play-button { width: 2.9rem; height: 2.9rem; background: var(--accent); color: var(--accent-contrast); }
+	.play-button:hover:not(:disabled) { background: var(--accent-ink); }
+	.play-button svg { width: 1.15rem; height: 1.15rem; }
+	.play-button [data-play-icon] { fill: currentColor; stroke: none; }
+	.repeat-one { position: absolute; right: .12rem; bottom: .12rem; display: grid; width: .8rem; height: .8rem; place-items: center; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); font-size: .5rem; font-weight: 800; }
+	.timeline { display: grid; grid-template-columns: 2.7rem minmax(0, 1fr) 2.7rem; align-items: center; gap: .55rem; }
+	.timeline time { color: var(--muted); font-size: .62rem; font-variant-numeric: tabular-nums; }
+	.timeline time:last-child { text-align: right; }
+	input[type='range'] { height: 1rem; margin: 0; accent-color: var(--accent); cursor: pointer; }
+	input[type='range']:disabled { cursor: default; opacity: .5; }
+	input[type='range']::-webkit-slider-runnable-track { height: .22rem; border-radius: 999px; background: color-mix(in srgb, var(--muted) 28%, transparent); }
+	input[type='range']::-webkit-slider-thumb { width: .8rem; height: .8rem; margin-top: -.29rem; border: 0; border-radius: 50%; background: var(--accent); -webkit-appearance: none; }
+	.volume-control { display: flex; align-items: center; justify-content: flex-end; gap: .5rem; }
+	.volume-control input { width: min(7rem, 10vw); }
+	button:disabled { cursor: default; opacity: .42; }
+	.player-notice { position: absolute; z-index: 5; right: 1rem; bottom: 8.2rem; max-width: min(24rem, calc(100% - 2rem)); margin: 0; padding: .65rem .85rem; border-radius: .75rem; background: var(--ink); color: var(--paper); font-size: .7rem; opacity: 0; pointer-events: none; transform: translateY(.5rem); transition: opacity .2s ease, transform .2s ease; }
+	.player-notice.visible { opacity: 1; transform: translateY(0); }
+	@keyframes state-level { to { height: 100%; } }
+	@media (max-width: 900px) {
+		.player-controls { grid-template-columns: minmax(10rem, .8fr) minmax(19rem, 1.4fr); }
+		.volume-control { display: none; }
+	}
+	@media (max-width: 760px) {
+		.music-player { height: calc(100svh - 5.6rem); min-height: 38rem; border-radius: 1.25rem; }
+		.player-surface { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+		.player-heading { min-height: 4.8rem; padding: .9rem 1rem; }
+		.player-heading h1 { font-size: 1.3rem; }
+		.player-heading a { padding-inline: .55rem; }
+		.mobile-pane-tabs { display: flex; gap: .25rem; padding: .45rem; border-bottom: 1px solid var(--line); }
+		.mobile-pane-tabs button { flex: 1; min-height: 2.4rem; border: 0; border-radius: .7rem; background: transparent; color: var(--muted); cursor: pointer; font-size: .76rem; font-weight: 650; }
+		.mobile-pane-tabs button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent-ink); }
+		.player-body { display: grid; grid-template-columns: 1fr; }
+		.playlist-pane, .lyrics-pane { grid-area: 1 / 1; }
+		.music-player[data-mobile-pane='lyrics'] .playlist-pane,
+		.music-player[data-mobile-pane='playlist'] .lyrics-pane { display: none; }
+		.playlist-pane { border-right: 0; }
+		.lyrics-pane { padding: 1rem; }
+		.lyrics-heading h2 { max-width: 62vw; }
+		.lyrics-scroll { padding-block: 3rem; }
+		.player-controls { min-height: 8.7rem; grid-template-columns: 1fr auto; gap: .65rem 1rem; padding: .75rem 1rem; }
+		.now-playing { min-width: 0; }
+		.control-center { display: contents; }
+		.transport-controls { grid-column: 2; grid-row: 1; }
+		.timeline { grid-column: 1 / -1; grid-row: 2; }
+		.transport-controls .icon-button:first-child,
+		.transport-controls .icon-button:last-child { display: none; }
+		.player-notice { bottom: 9.7rem; }
+	}
+	@media (max-width: 480px) {
+		.player-heading p { max-width: 13rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+		.player-heading a { font-size: 0; }
+		.player-heading a svg { width: 1.1rem; height: 1.1rem; }
+		.current-cover { width: 2.8rem; height: 2.8rem; }
+		.lyrics-heading h2 { font-size: 1.1rem; }
+		.player-controls { grid-template-columns: minmax(0, 1fr) auto; }
+		.now-cover { width: 2.8rem; height: 2.8rem; }
+		.icon-button { width: 2.1rem; height: 2.1rem; }
+		.play-button { width: 2.65rem; height: 2.65rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.player-background-video { display: none; }
+		.state-equalizer i { animation: none; }
+		.lyrics-scroll { scroll-behavior: auto; }
+	}
+	@supports not (backdrop-filter: blur(1rem)) {
+		.player-surface { background: color-mix(in srgb, var(--surface) 90%, var(--surface-lilac)); }
+	}
+</style>

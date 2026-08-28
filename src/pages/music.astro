@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
+import { SITE_TITLE } from '../consts';
+
+const designContract = `<!--
+THESIS: 音乐页是一台沉浸式但清晰可操作的个人播放器，不采用导航弹窗或通用嵌入播放器。
+OWN-WORLD: 延续 kkkk 的浅紫、柔和圆角和克制线条，以专辑封面或自定义媒体形成背景氛围。
+STORY: 访客从左侧歌单选择歌曲，在中央跟随歌词，并始终通过底部控制区掌握播放状态。
+FIRST VIEWPORT: 桌面首屏同时呈现歌单、歌词与完整控制条；移动端以歌单和歌词切换保持可用。
+FORM: 用户明确指定的三段式播放器界面；seed key: music-player-surface-v1。
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+-->`;
+---
+
+<BaseLayout
+	title={`音乐 · ${SITE_TITLE}`}
+	description="浏览 kkkk 收藏的音乐，在同步歌词与沉浸背景中播放歌单。"
+	designContract={designContract}
+>
+	<main class="shell music-page">
+		<MusicPlayer />
+	</main>
+</BaseLayout>
+
+<style>
+	.music-page { padding-block: 1.5rem 0; }
+	@media (max-width: 640px) { .music-page { padding-top: 1rem; } }
+</style>
