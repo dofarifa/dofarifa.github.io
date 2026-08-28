@@ -4,7 +4,7 @@
 import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
-import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+import { SITE_AUTHOR, SITE_ICON, SITE_TITLE } from '../consts';
 
 interface Props {
 	title: string;
@@ -20,7 +20,8 @@ const { title, description, image = FallbackImage } = Astro.props;
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" href={SITE_ICON} />
+<link rel="apple-touch-icon" href={SITE_ICON} />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
 	rel="alternate"

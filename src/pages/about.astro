@@ -1,37 +1,148 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+import { SITE_AUTHOR, SITE_AVATAR, SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft));
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+const firstYear = posts.length ? Math.min(...posts.map((post) => post.data.pubDate.getFullYear())) : new Date().getFullYear();
 ---
 
 <BaseLayout title={`关于 · ${SITE_TITLE}`} description="关于这个博客和它的作者。">
 	<main class="shell about">
-		<section class="about-intro">
-			<h1>你好，我是<br />{SITE_AUTHOR}。</h1>
-			<p class="lead">一个喜欢把问题拆开、把想法写下来的普通人。</p>
-		</section>
-		<section class="about-grid">
-			<div class="portrait" aria-hidden="true"><span>保持<br />好奇</span></div>
-			<div class="about-copy prose">
+		<header class="about-hero">
+			<div class="avatar-wrap">
+				<img src={SITE_AVATAR} width="144" height="144" alt={`${SITE_AUTHOR} 的头像`} />
+				<span class="status-dot"><span class="sr-only">持续记录中</span></span>
+			</div>
+			<h1>关于我</h1>
+			<p>认识写下这些文字的人，也认识这个正在生长的小站。</p>
+		</header>
+
+		<div class="about-board">
+			<section class="about-card identity-card">
+				<h2>你好，我是 {SITE_AUTHOR}。</h2>
+				<p>一个喜欢把问题拆开、把想法写下来的普通人。</p>
+				<ul class="identity-tags" aria-label="关注的内容">
+					<li>技术实践</li>
+					<li>阅读思考</li>
+					<li>生活观察</li>
+				</ul>
+			</section>
+
+			<section class="about-card motto-card">
+				<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 9h7v7H9c0 4 2 6 5 7v2C8 24 5 20 5 15V9h3Zm14 0h7v7h-6c0 4 2 6 5 7v2c-6-1-9-5-9-10V9h3Z" /></svg>
+				<h2>{SITE_TAGLINE}</h2>
+				<p>保持好奇，也保持诚实。</p>
+			</section>
+
+			<section class="about-card writing-card">
+				<h2>我在写什么</h2>
+				<p class="card-intro">围绕真实的问题留下过程，而不只是最终答案。</p>
+				<ul class="writing-list">
+					<li>
+						<span class="topic-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14" /></svg></span>
+						<div><h3>技术实践</h3><p>项目记录、实现思路与踩坑过程。</p></div>
+					</li>
+					<li>
+						<span class="topic-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Zm3 12h10M9 8h5" /></svg></span>
+						<div><h3>阅读思考</h3><p>书、文章以及它们带来的新问题。</p></div>
+					</li>
+					<li>
+						<span class="topic-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM12 2v3M8.5 10.5c1.5-1.8 3.4-2.5 6-2" /></svg></span>
+						<div><h3>生活观察</h3><p>值得留住的日常片段与感受。</p></div>
+					</li>
+				</ul>
+			</section>
+
+			<section class="about-card garden-card">
 				<h2>关于这里</h2>
 				<p>这里是我的个人数字花园。我会记录做项目时遇到的问题、读书后的思考，以及生活中那些容易被忽略的小事。</p>
-				<p>我相信写作不是为了显得已经想明白，而是为了在文字里慢慢靠近答案。文章不会追逐更新频率，但会尽量保持真实、有用和经得起回看。</p>
-				<h2>联系我</h2>
-				<p>你可以通过 RSS 订阅更新。待你填入 GitHub 用户名或邮箱后，也可以在这里加入自己的联系方式。</p>
-				<a class="button button-primary" href="/rss.xml">订阅 RSS</a>
-			</div>
-		</section>
+				<p>写作不是为了显得已经想明白，而是为了在文字里慢慢靠近答案。文章不会追逐更新频率，但会尽量保持真实、有用和经得起回看。</p>
+				<a class="text-action" href="/blog">
+					去文章页看看
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+				</a>
+			</section>
+
+			<section class="about-card archive-card">
+				<h2>内容档案</h2>
+				<dl>
+					<div><dt>文章</dt><dd>{posts.length}</dd></div>
+					<div><dt>标签</dt><dd>{tags.length}</dd></div>
+					<div><dt>开始记录</dt><dd>{firstYear}</dd></div>
+				</dl>
+				<p>{SITE_DESCRIPTION}</p>
+			</section>
+
+			<section class="about-card subscribe-card">
+				<div>
+					<h2>保持联系</h2>
+					<p>通过 RSS 获取新文章，不受算法和更新频率打扰。</p>
+				</div>
+				<a class="button button-primary" href="/rss.xml">
+					订阅 RSS
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16M5 9a10 10 0 0 1 10 10M7 16.5A2.5 2.5 0 1 1 4.5 19 2.5 2.5 0 0 1 7 16.5Z" /></svg>
+				</a>
+			</section>
+		</div>
 	</main>
 </BaseLayout>
 
 <style>
-	.about { padding-block: 6rem; }
-	.about-intro h1 { margin: 0 0 1.5rem; font-size: clamp(4rem, 9vw, 6rem); letter-spacing: -.04em; }
-	.lead { color: var(--muted); font-size: 1.15rem; }
-	.about-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: clamp(3rem, 8vw, 8rem); align-items: start; margin-top: 6rem; }
-	.portrait { position: sticky; top: 7rem; display: grid; aspect-ratio: 4 / 5; place-items: center; border-radius: 2rem; background: var(--surface-lilac); color: var(--accent-ink); box-shadow: var(--shadow); }
-	.portrait span { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.8rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.1; text-align: center; transform: rotate(-4deg); }
-	.about-copy { max-width: 42rem; padding: clamp(2rem, 5vw, 4rem); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow); }
-	.about-copy h2:first-child { margin-top: 0; }
-	.about-copy .button { margin-top: 1rem; }
-	@media (max-width: 720px) { .about { padding-block: 4rem; } .about-grid { grid-template-columns: 1fr; margin-top: 4rem; } .portrait { position: relative; top: auto; width: min(20rem, 80vw); margin: 0 auto; } }
+	.about { padding-block: 4.5rem 1rem; }
+	.about-hero { display: grid; justify-items: center; text-align: center; }
+	.avatar-wrap { position: relative; width: clamp(7rem, 12vw, 9rem); aspect-ratio: 1; }
+	.avatar-wrap img { width: 100%; height: 100%; border: .5rem solid color-mix(in srgb, var(--surface) 82%, transparent); border-radius: 50%; object-fit: cover; box-shadow: var(--shadow); }
+	.status-dot { position: absolute; right: 4%; bottom: 8%; width: 1.35rem; height: 1.35rem; border: .25rem solid var(--paper); border-radius: 50%; background: #43c985; }
+	.about-hero h1 { margin: 1.4rem 0 .65rem; font-size: clamp(2.8rem, 6vw, 4.5rem); letter-spacing: -.04em; }
+	.about-hero p { max-width: 34rem; margin: 0; color: var(--muted); font-size: .96rem; }
+	.about-board { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1rem; margin-top: 3.5rem; }
+	.about-card { min-width: 0; padding: clamp(1.5rem, 3vw, 2.4rem); border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
+	.about-card h2 { margin: 0; font-size: clamp(1.75rem, 3vw, 2.7rem); letter-spacing: -.03em; }
+	.about-card > p, .card-intro { color: var(--muted); line-height: 1.8; }
+	.identity-card { grid-column: span 7; min-height: 16rem; background: var(--surface-lilac); }
+	.identity-card h2 { max-width: 13ch; font-size: clamp(2.3rem, 4.5vw, 4rem); }
+	.identity-card > p { margin: 1rem 0 0; font-size: 1rem; }
+	.identity-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 2rem 0 0; padding: 0; list-style: none; }
+	.identity-tags li { padding: .45rem .75rem; border-radius: 999px; background: color-mix(in srgb, var(--surface) 74%, transparent); color: var(--accent-ink); font-size: .74rem; font-weight: 650; }
+	.motto-card { position: relative; display: flex; overflow: hidden; grid-column: span 5; flex-direction: column; justify-content: flex-end; background: var(--surface-blue); }
+	.motto-card > svg { position: absolute; top: 1.2rem; right: 1.4rem; width: 4.5rem; fill: color-mix(in srgb, var(--accent) 15%, transparent); }
+	.motto-card h2 { max-width: 12ch; font-size: clamp(2rem, 3.5vw, 3.25rem); }
+	.motto-card p { margin: .8rem 0 0; }
+	.writing-card { grid-column: span 5; }
+	.card-intro { margin: .65rem 0 1.5rem; font-size: .86rem; }
+	.writing-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+	.writing-list li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .9rem; padding: .8rem 0; border-top: 1px solid var(--line); }
+	.topic-icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .8rem; background: var(--accent-soft); color: var(--accent-ink); }
+	.topic-icon svg { width: 1.15rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+	.writing-list h3 { margin: 0 0 .2rem; font-size: .95rem; }
+	.writing-list p { margin: 0; color: var(--muted); font-size: .75rem; line-height: 1.5; }
+	.garden-card { grid-column: span 7; background: var(--surface-mint); }
+	.garden-card > p { max-width: 58ch; margin: 1.15rem 0 0; font-size: .92rem; }
+	.text-action { display: inline-flex; min-height: 2.6rem; align-items: center; gap: .3rem; margin-top: 1.4rem; color: var(--accent-ink); font-size: .82rem; font-weight: 700; line-height: 1; text-decoration: none; }
+	.text-action svg, .subscribe-card .button svg { width: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+	.archive-card { grid-column: span 5; background: var(--surface-peach); }
+	.archive-card dl { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.4rem 0; }
+	.archive-card dl div { min-width: 5.5rem; }
+	.archive-card dt { color: var(--muted); font-size: .7rem; }
+	.archive-card dd { margin: .2rem 0 0; color: var(--ink); font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+	.archive-card > p { margin: 0; font-size: .8rem; }
+	.subscribe-card { display: flex; grid-column: span 7; align-items: center; justify-content: space-between; gap: 2rem; background: var(--surface-lilac); }
+	.subscribe-card p { margin: .65rem 0 0; font-size: .86rem; }
+	.subscribe-card .button { flex: none; }
+	@media (max-width: 840px) {
+		.about { padding-top: 3.5rem; }
+		.identity-card, .motto-card, .writing-card, .garden-card, .archive-card, .subscribe-card { grid-column: 1 / -1; }
+		.motto-card { min-height: 15rem; }
+	}
+	@media (max-width: 520px) {
+		.about { padding-block: 3rem 0; }
+		.about-board { margin-top: 2.5rem; }
+		.about-card { padding: 1.4rem; }
+		.identity-card { min-height: 14rem; }
+		.identity-card h2 { font-size: 2.25rem; }
+		.subscribe-card { align-items: flex-start; flex-direction: column; }
+		.subscribe-card .button { width: 100%; }
+	}
 </style>

@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE } from '../consts';
+import { SITE_AVATAR, SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -80,7 +80,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 			<aside class="sidebar" aria-label="博客信息">
 				<section class="profile-card">
-					<div class="profile-cover" aria-hidden="true"><span>k</span></div>
+					<div class="profile-cover"><img src={SITE_AVATAR} width="72" height="72" alt={`${SITE_TITLE} 的头像`} /></div>
 					<div class="profile-copy">
 						<h2>{SITE_TITLE}</h2>
 						<p>{SITE_DESCRIPTION}</p>
@@ -156,7 +156,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	.sidebar { position: sticky; top: 8.5rem; display: grid; gap: 1rem; }
 	.profile-card, .side-card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
 	.profile-cover { display: grid; min-height: 9rem; place-items: center; background: var(--surface-lilac); }
-	.profile-cover span { display: grid; width: 4.4rem; height: 4.4rem; place-items: center; border: .4rem solid color-mix(in srgb, var(--surface) 76%, transparent); border-radius: 1.5rem; background: var(--accent); color: var(--accent-contrast); font-family: var(--font-display); font-size: 2rem; font-weight: 800; box-shadow: var(--shadow); }
+	.profile-cover img { width: 4.5rem; height: 4.5rem; border: .35rem solid color-mix(in srgb, var(--surface) 78%, transparent); border-radius: 1.4rem; object-fit: cover; box-shadow: var(--shadow); }
 	.profile-copy { padding: 1.3rem; }
 	.profile-copy h2, .side-card h2 { margin: 0; font-size: 1.1rem; }
 	.profile-copy p { margin: .55rem 0 1.1rem; color: var(--muted); font-size: .78rem; line-height: 1.65; }
