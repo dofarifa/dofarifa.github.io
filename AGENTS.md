@@ -16,6 +16,7 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 
 ## Git Workflow
 
+- After completing each requested modification, commit and push the changes to the configured remote repository.
 - When pushing changes to a remote repository, write commit messages and any related descriptions in Chinese.
 
 ## Documentation

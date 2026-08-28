@@ -71,15 +71,10 @@
 		});
 	});
 
-	const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-	systemTheme.addEventListener('change', (event) => {
-		if (!readStoredTheme()) applyTheme(event.matches ? 'dark' : 'light', false);
-	});
-
 	window.addEventListener('storage', (event) => {
 		if (event.key !== storageKey) return;
 		const storedTheme = readStoredTheme();
-		applyTheme(storedTheme ?? (systemTheme.matches ? 'dark' : 'light'), false);
+		applyTheme(storedTheme ?? 'light', false);
 	});
 
 	updateControls(currentTheme());

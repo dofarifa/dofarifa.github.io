@@ -1,47 +1,155 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import { SITE_TAGLINE, SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import SearchDialog from './SearchDialog.astro';
 import ThemeToggle from './ThemeToggle.astro';
+
+const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const searchPosts = posts.map((post) => ({
+	title: post.data.title,
+	description: post.data.description,
+	href: `/blog/${post.id}/`,
+	date: post.data.pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }),
+	tags: post.data.tags,
+}));
+const randomPostUrls = searchPosts.map((post) => post.href);
 ---
 
 <header class="site-header">
 	<nav class="shell nav" aria-label="主导航">
-		<a class="brand" href="/" aria-label={`${SITE_TITLE}首页`}>
+		<a class="brand" href="/" aria-label={`${SITE_TITLE} 首页`}>
 			<span class="brand-mark" aria-hidden="true">k</span>
 			<span>{SITE_TITLE}</span>
 		</a>
-		<div class="nav-links">
+
+		<div class="nav-links desktop-nav">
 			<HeaderLink href="/">首页</HeaderLink>
 			<HeaderLink href="/blog">文章</HeaderLink>
 			<HeaderLink href="/about">关于</HeaderLink>
+		</div>
+
+		<div class="header-tools">
+			<button class="tool-button" type="button" data-random-post aria-label="随机阅读一篇文章" title="随机阅读">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" /></svg>
+			</button>
+			<button class="tool-button" type="button" data-search-open aria-label="搜索文章" title="搜索文章">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.2 4.2" /></svg>
+			</button>
 			<ThemeToggle />
-			<a class="rss-link" href="/rss.xml" aria-label="RSS 订阅" title="RSS 订阅">
+			<a class="tool-button rss-link" href="/rss.xml" aria-label="RSS 订阅" title="RSS 订阅">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3a16 16 0 0 1 16 16h-3A13 13 0 0 0 5 6V3Zm0 6a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V9Zm1.5 7A2.5 2.5 0 1 1 4 18.5 2.5 2.5 0 0 1 6.5 16Z" /></svg>
 			</a>
+
+			<details class="mobile-menu">
+				<summary aria-label="打开导航菜单">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+				</summary>
+				<div class="mobile-menu-panel">
+					<HeaderLink href="/">首页</HeaderLink>
+					<HeaderLink href="/blog">文章</HeaderLink>
+					<HeaderLink href="/about">关于</HeaderLink>
+					<a href="/rss.xml">RSS 订阅</a>
+				</div>
+			</details>
 		</div>
 	</nav>
+
+	<div class="shell notice-bar">
+		<span>此刻</span>
+		<p>{SITE_TAGLINE}</p>
+		<a href="/blog" aria-label="前往文章列表">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+		</a>
+	</div>
 </header>
+
+<SearchDialog posts={searchPosts} />
+<script type="application/json" id="random-post-urls" set:html={JSON.stringify(randomPostUrls)} />
+
+<script>
+	const randomPostData = document.querySelector<HTMLScriptElement>('#random-post-urls');
+	const postUrls: string[] = randomPostData ? JSON.parse(randomPostData.textContent ?? '[]') : [];
+
+	document.querySelectorAll<HTMLButtonElement>('[data-random-post]').forEach((button) => {
+		button.addEventListener('click', () => {
+			if (!postUrls.length) return;
+			window.location.href = postUrls[Math.floor(Math.random() * postUrls.length)];
+		});
+	});
+
+	document.addEventListener('click', (event) => {
+		document.querySelectorAll<HTMLDetailsElement>('.mobile-menu[open]').forEach((menu) => {
+			if (!menu.contains(event.target as Node)) menu.removeAttribute('open');
+		});
+	});
+</script>
 
 <style>
 	.site-header {
 		position: sticky;
 		top: 0;
 		z-index: 20;
-		padding-top: .7rem;
-		background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 92%, transparent) 65%, transparent);
+		padding-top: .65rem;
+		background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 96%, transparent) 78%, transparent);
 		backdrop-filter: blur(18px);
 	}
-	.nav { display: flex; min-height: 4.25rem; align-items: center; justify-content: space-between; gap: 2rem; padding-inline: 1rem; border: 1px solid var(--line); border-radius: var(--radius-card); background: color-mix(in srgb, var(--surface) 94%, transparent); }
-	.brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--ink); font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; letter-spacing: -.02em; text-decoration: none; }
+	.nav {
+		display: grid;
+		min-height: 4.15rem;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: center;
+		gap: 1.25rem;
+		padding-inline: .8rem;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-card);
+		background: color-mix(in srgb, var(--surface) 94%, transparent);
+		box-shadow: 0 8px 28px color-mix(in srgb, var(--decor-shadow) 42%, transparent);
+	}
+	.brand { display: inline-flex; width: fit-content; align-items: center; gap: .65rem; color: var(--ink); font-family: var(--font-display); font-size: 1.06rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; text-decoration: none; }
 	.brand-mark { display: grid; width: 2.15rem; height: 2.15rem; place-items: center; border-radius: .75rem; background: var(--accent-soft); color: var(--accent-ink); font-size: 1rem; font-weight: 800; }
-	.nav-links { display: flex; align-items: center; gap: .2rem; }
-	.rss-link { display: grid; width: 2.4rem; height: 2.4rem; margin-left: .25rem; place-items: center; border-radius: 50%; color: var(--muted); transition: .2s ease; }
-	.rss-link:hover { background: var(--accent-soft); color: var(--accent-ink); }
-	.rss-link svg { width: 1rem; fill: currentColor; }
-	@media (max-width: 540px) {
-		.site-header { padding-top: .5rem; }
-		.nav { min-height: 3.75rem; gap: .5rem; padding-inline: .65rem; }
-		.brand > span:last-child { display: none; }
-		.nav-links { gap: 0; }
+	.nav-links { display: flex; align-items: center; gap: .15rem; }
+	.header-tools { display: flex; align-items: center; justify-content: flex-end; gap: .08rem; }
+	.tool-button, .mobile-menu summary {
+		display: grid;
+		width: 2.4rem;
+		height: 2.4rem;
+		padding: 0;
+		border: 0;
+		place-items: center;
+		border-radius: 50%;
+		background: transparent;
+		color: var(--muted);
+		cursor: pointer;
+		transition: background-color .2s ease, color .2s ease, transform .2s ease;
+	}
+	.tool-button:hover, .mobile-menu summary:hover { background: var(--accent-soft); color: var(--accent-ink); transform: translateY(-1px); }
+	.tool-button svg, .mobile-menu summary svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+	.rss-link svg { fill: currentColor; stroke: none; }
+	.notice-bar { display: grid; min-height: 3rem; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; margin-top: .5rem; padding: .45rem .75rem .45rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-small); background: color-mix(in srgb, var(--surface) 90%, transparent); }
+	.notice-bar > span { color: var(--accent-ink); font-size: .78rem; font-weight: 700; }
+	.notice-bar p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.45; text-align: center; }
+	.notice-bar a { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: var(--ink); color: var(--surface); }
+	.notice-bar a:hover { background: var(--accent); }
+	.notice-bar svg { width: .9rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+	.mobile-menu { position: relative; display: none; }
+	.mobile-menu summary { list-style: none; }
+	.mobile-menu summary::-webkit-details-marker { display: none; }
+	.mobile-menu-panel { position: absolute; top: calc(100% + .75rem); right: 0; display: grid; width: 11rem; gap: .2rem; padding: .6rem; border: 1px solid var(--line); border-radius: var(--radius-small); background: var(--surface); box-shadow: var(--shadow); }
+	.mobile-menu-panel :global(a) { display: flex; min-height: 2.65rem; align-items: center; padding: .6rem .8rem; border-radius: .7rem; color: var(--muted); font-size: .88rem; font-weight: 600; line-height: 1; text-decoration: none; }
+	.mobile-menu-panel :global(a:hover), .mobile-menu-panel :global(a.active) { background: var(--accent-soft); color: var(--accent-ink); }
+	@media (max-width: 760px) {
+		.nav { grid-template-columns: 1fr auto; }
+		.desktop-nav, .rss-link { display: none; }
+		.mobile-menu { display: block; }
+	}
+	@media (max-width: 520px) {
+		.site-header { padding-top: .45rem; }
+		.nav { min-height: 3.75rem; gap: .35rem; padding-inline: .55rem; }
+		.header-tools { gap: 0; }
+		.header-tools > .tool-button, .header-tools > :global(.theme-toggle), .mobile-menu summary { width: 2.25rem; height: 2.25rem; }
+		.notice-bar { gap: .6rem; padding-left: .8rem; }
+		.notice-bar p { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	}
 </style>

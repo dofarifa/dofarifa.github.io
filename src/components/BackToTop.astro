@@ -1,0 +1,40 @@
+<button class="back-to-top" type="button" data-back-to-top aria-label="返回页面顶部" title="返回顶部">
+	<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.5 14.5 5.5-5 5.5 5" /></svg>
+</button>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
+	const updateVisibility = () => button?.classList.toggle('is-visible', window.scrollY > 480);
+
+	button?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+	window.addEventListener('scroll', updateVisibility, { passive: true });
+	updateVisibility();
+</script>
+
+<style>
+	.back-to-top {
+		position: fixed;
+		right: max(1.25rem, calc((100vw - 1180px) / 2 - 4rem));
+		bottom: 1.5rem;
+		z-index: 18;
+		display: grid;
+		width: 2.8rem;
+		height: 2.8rem;
+		padding: 0;
+		border: 1px solid var(--line);
+		place-items: center;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--surface) 92%, transparent);
+		color: var(--accent-ink);
+		box-shadow: var(--shadow);
+		cursor: pointer;
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(.7rem);
+		transition: opacity .2s ease, transform .2s ease, background-color .2s ease;
+		backdrop-filter: blur(12px);
+	}
+	.back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+	.back-to-top:hover { background: var(--accent-soft); }
+	.back-to-top svg { width: 1.2rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+</style>

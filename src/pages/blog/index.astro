@@ -15,11 +15,17 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 		<header class="archive-header">
 			<h1>所有文章</h1>
 			<p>共 {posts.length} 篇文字，关于技术、阅读与那些值得记住的瞬间。</p>
-			{tags.length > 0 && <ul class="tags">{tags.map((tag) => <li>#{tag}</li>)}</ul>}
+			{tags.length > 0 && (
+				<div class="tag-filter" aria-label="按标签筛选文章">
+					<button type="button" class="is-active" data-tag-filter="">全部</button>
+					{tags.map((tag) => <button type="button" data-tag-filter={tag}>{tag}</button>)}
+				</div>
+			)}
 		</header>
-		<div class="post-list">
+		<p class="filter-summary" data-filter-summary aria-live="polite">显示全部 {posts.length} 篇文章</p>
+		<div class="post-list" data-post-list>
 			{posts.map((post, index) => (
-				<article class="post-row">
+				<article class="post-row" data-post-row data-tags={JSON.stringify(post.data.tags)}>
 					<a class="post-image" href={`/blog/${post.id}/`} aria-label={`阅读《${post.data.title}》`}>
 						{post.data.heroImage ? <Image src={post.data.heroImage} width={640} height={400} alt="" /> : <span>{String(index + 1).padStart(2, '0')}</span>}
 					</a>
@@ -32,17 +38,61 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 				</article>
 			))}
 		</div>
+		<div class="filter-empty" data-filter-empty hidden>
+			<h2>这个标签下还没有文章</h2>
+			<p>可以切换到其他标签，或查看全部文章。</p>
+		</div>
 	</main>
 </BaseLayout>
 
+<script>
+	const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-tag-filter]')];
+	const rows = [...document.querySelectorAll<HTMLElement>('[data-post-row]')];
+	const summary = document.querySelector<HTMLElement>('[data-filter-summary]');
+	const empty = document.querySelector<HTMLElement>('[data-filter-empty]');
+
+	const applyFilter = (tag: string, updateUrl = true) => {
+		let visibleCount = 0;
+		rows.forEach((row) => {
+			const tags: string[] = JSON.parse(row.dataset.tags ?? '[]');
+			const matches = !tag || tags.includes(tag);
+			row.hidden = !matches;
+			if (matches) visibleCount += 1;
+		});
+
+		buttons.forEach((button) => {
+			const isActive = (button.dataset.tagFilter ?? '') === tag;
+			button.classList.toggle('is-active', isActive);
+			button.setAttribute('aria-pressed', String(isActive));
+		});
+
+		if (summary) summary.textContent = tag ? `${tag} · ${visibleCount} 篇文章` : `显示全部 ${visibleCount} 篇文章`;
+		if (empty) empty.hidden = visibleCount > 0;
+
+		if (updateUrl) {
+			const url = new URL(window.location.href);
+			tag ? url.searchParams.set('tag', tag) : url.searchParams.delete('tag');
+			history.replaceState({}, '', url);
+		}
+	};
+
+	buttons.forEach((button) => button.addEventListener('click', () => applyFilter(button.dataset.tagFilter ?? '')));
+	const initialTag = new URLSearchParams(window.location.search).get('tag') ?? '';
+	applyFilter(buttons.some((button) => button.dataset.tagFilter === initialTag) ? initialTag : '', false);
+</script>
+
 <style>
-	.archive { padding-block: 6rem; }
-	.archive-header { max-width: 46rem; margin-bottom: 5rem; }
+	.archive { padding-block: 5rem; }
+	.archive-header { max-width: 52rem; margin-bottom: 3.5rem; }
 	.archive-header h1 { margin: 0 0 1rem; font-size: clamp(3.5rem, 8vw, 6rem); letter-spacing: -.04em; }
 	.archive-header > p { color: var(--muted); font-size: 1.05rem; }
-	.tags { display: flex; flex-wrap: wrap; gap: .5rem; margin: 2rem 0 0; padding: 0; list-style: none; }
-	.tags li { padding: .35rem .7rem; border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-size: .75rem; }
+	.tag-filter { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2rem; }
+	.tag-filter button { display: inline-flex; min-height: 2.45rem; align-items: center; justify-content: center; padding: .55rem .85rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--muted); font-size: .78rem; font-weight: 600; line-height: 1; cursor: pointer; transition: .2s ease; }
+	.tag-filter button:hover { border-color: var(--accent); color: var(--accent-ink); }
+	.tag-filter button.is-active { border-color: var(--accent); background: var(--accent); color: var(--accent-contrast); }
+	.filter-summary { margin: 0 0 1rem; color: var(--muted); font-size: .78rem; }
 	.post-list { display: grid; gap: 1.25rem; }
+	.post-row[hidden] { display: none; }
 	.post-row { display: grid; grid-template-columns: minmax(15rem, .8fr) 1.2fr; gap: clamp(2rem, 5vw, 5rem); padding: 1rem; border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow); }
 	.post-row:nth-child(even) { background: var(--surface-blue); }
 	.post-image { display: grid; overflow: hidden; min-height: 15rem; place-items: center; border-radius: var(--radius-small); background: var(--paper-deep); color: color-mix(in srgb, var(--ink) 25%, transparent); font-family: var(--font-display); font-size: 5rem; text-decoration: none; }
@@ -53,6 +103,9 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 	.post-copy h2 { margin: 1rem 0; font-size: clamp(1.8rem, 4vw, 3.1rem); letter-spacing: -.03em; }
 	.post-copy h2 a { color: var(--ink); text-decoration: none; }
 	.post-copy > p { max-width: 38rem; color: var(--muted); line-height: 1.8; }
-	.read-more { display: inline-block; margin-top: 1rem; font-size: .85rem; font-weight: 700; text-decoration: none; }
+	.read-more { display: inline-flex; min-height: 2.25rem; align-items: center; margin-top: .75rem; font-size: .85rem; font-weight: 700; line-height: 1; text-decoration: none; }
+	.filter-empty { padding: 4rem 1rem; border: 1px dashed var(--line); border-radius: var(--radius-card); background: var(--surface); text-align: center; }
+	.filter-empty h2 { margin: 0; font-size: 1.5rem; }
+	.filter-empty p { margin: .6rem 0 0; color: var(--muted); font-size: .9rem; }
 	@media (max-width: 720px) { .archive { padding-block: 4rem; } .archive-header { margin-bottom: 3rem; } .post-row { grid-template-columns: 1fr; gap: 1.25rem; } .post-image { min-height: 13rem; } .post-copy { padding: .25rem 1rem 1.25rem; } }
 </style>
