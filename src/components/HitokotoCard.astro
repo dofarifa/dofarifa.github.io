@@ -2,7 +2,7 @@
 import { SITE_TAGLINE } from '../consts';
 ---
 
-<div class="hitokoto-card shell" data-hitokoto-card>
+<div class="hitokoto-card" data-hitokoto-card>
 	<a class="hitokoto-content" data-hitokoto-link href="https://hitokoto.cn/" target="_blank" rel="noreferrer">
 		<span data-hitokoto-text>{SITE_TAGLINE}</span>
 		<cite data-hitokoto-source>本站格言</cite>
@@ -80,16 +80,13 @@ import { SITE_TAGLINE } from '../consts';
 <style>
 	.hitokoto-card {
 		display: flex;
-		min-height: 3rem;
+		width: 100%;
+		min-width: 0;
 		align-items: center;
-		justify-content: center;
-		margin-top: .5rem;
-		padding: .65rem 1rem;
-		border: 1px solid var(--line);
-		border-radius: var(--radius-small);
-		background: color-mix(in srgb, var(--surface) 90%, transparent);
+		padding-top: 1rem;
+		border-top: 1px solid var(--line);
 	}
-	.hitokoto-content { display: flex; min-width: 0; align-items: center; justify-content: center; gap: .7rem; color: var(--muted); font-size: .78rem; line-height: 1.45; text-decoration: none; }
+	.hitokoto-content { display: flex; width: 100%; min-width: 0; align-items: center; justify-content: flex-start; gap: .7rem; color: var(--muted); font-size: .78rem; line-height: 1.45; text-decoration: none; }
 	.hitokoto-content:hover [data-hitokoto-text] { color: var(--accent-ink); }
 	[data-hitokoto-text] { overflow: hidden; min-width: 0; text-overflow: ellipsis; white-space: nowrap; transition: color .2s ease; }
 	.hitokoto-content cite { flex: none; color: color-mix(in srgb, var(--muted) 72%, transparent); font-size: .68rem; font-style: normal; }
@@ -97,8 +94,5 @@ import { SITE_TAGLINE } from '../consts';
 	.hitokoto-card[data-state='loading'] .hitokoto-content { opacity: .72; }
 	@media (max-width: 700px) {
 		.hitokoto-content cite { display: none; }
-	}
-	@media (max-width: 520px) {
-		.hitokoto-card { padding-inline: .8rem; }
 	}
 </style>

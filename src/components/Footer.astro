@@ -1,28 +1,33 @@
 ---
 import { SITE_AUTHOR, SITE_TITLE } from '../consts';
+import HitokotoCard from './HitokotoCard.astro';
 
 const today = new Date();
 ---
 
 <footer class="site-footer">
 	<div class="shell footer-inner">
-		<div>
-			<p class="footer-title">{SITE_TITLE}</p>
-			<p>写作是一种缓慢而坚定的思考。</p>
+		<div class="footer-main">
+			<div>
+				<p class="footer-title">{SITE_TITLE}</p>
+				<p>写作是一种缓慢而坚定的思考。</p>
+			</div>
+			<div class="footer-meta">
+				<a href="/rss.xml">RSS 订阅</a>
+				<span>© {today.getFullYear()} {SITE_AUTHOR}</span>
+			</div>
 		</div>
-		<div class="footer-meta">
-			<a href="/rss.xml">RSS 订阅</a>
-			<span>© {today.getFullYear()} {SITE_AUTHOR}</span>
-		</div>
+		<HitokotoCard />
 	</div>
 </footer>
 
 <style>
 	.site-footer { margin-top: 5rem; padding: 0 0 1.5rem; color: var(--muted); }
-	.footer-inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding: 2rem; border-radius: var(--radius-card); background: var(--surface-blue); }
+	.footer-inner { display: grid; gap: 2rem; padding: 2rem; border-radius: var(--radius-card); background: var(--surface-blue); }
+	.footer-main { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; }
 	.footer-title { margin: 0 0 .4rem; color: var(--ink); font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
 	p { margin: 0; font-size: .9rem; }
 	.footer-meta { display: flex; align-items: center; gap: 1.25rem; font-size: .85rem; }
 	.footer-meta a { color: inherit; text-underline-offset: .25rem; }
-	@media (max-width: 640px) { .footer-inner { align-items: flex-start; flex-direction: column; } }
+	@media (max-width: 640px) { .footer-main { align-items: flex-start; flex-direction: column; gap: 1.5rem; } }
 </style>

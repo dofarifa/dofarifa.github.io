@@ -154,10 +154,12 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	.post-card h3 { margin: .8rem 0 .55rem; font-size: 1.25rem; }
 	.post-card-copy > p:last-child { display: -webkit-box; overflow: hidden; margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.65; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 	.sidebar { position: sticky; top: 8.5rem; display: grid; gap: 1rem; }
-	.profile-card, .side-card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
-	.profile-cover { display: grid; min-height: 9rem; place-items: center; background: var(--surface-lilac); }
-	.profile-cover img { width: 4.5rem; height: 4.5rem; border: .35rem solid color-mix(in srgb, var(--surface) 78%, transparent); border-radius: 1.4rem; object-fit: cover; box-shadow: var(--shadow); }
-	.profile-copy { padding: 1.3rem; }
+	.profile-card, .side-card { border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
+	.profile-card { position: relative; overflow: hidden; }
+	.side-card { overflow: hidden; }
+	.profile-cover { position: relative; min-height: 7.25rem; background: var(--surface-lilac); }
+	.profile-cover img { position: absolute; bottom: -2.8rem; left: 1.3rem; width: 5.6rem; height: 5.6rem; border: .4rem solid var(--surface); border-radius: 50%; object-fit: cover; box-shadow: var(--shadow); }
+	.profile-copy { padding: 3.65rem 1.3rem 1.3rem; }
 	.profile-copy h2, .side-card h2 { margin: 0; font-size: 1.1rem; }
 	.profile-copy p { margin: .55rem 0 1.1rem; color: var(--muted); font-size: .78rem; line-height: 1.65; }
 	.profile-copy .button { width: 100%; min-height: 2.6rem; font-size: .78rem; }
