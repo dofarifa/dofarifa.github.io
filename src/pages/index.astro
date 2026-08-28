@@ -80,7 +80,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 			<aside class="sidebar" aria-label="博客信息">
 				<section class="profile-card">
-					<div class="profile-cover"><img src={SITE_AVATAR} width="72" height="72" alt={`${SITE_TITLE} 的头像`} /></div>
+					<div class="profile-cover"><Image src={SITE_AVATAR} width={144} height={144} format="webp" quality={80} loading="lazy" alt={`${SITE_TITLE} 的头像`} /></div>
 					<div class="profile-copy">
 						<h2>{SITE_TITLE}</h2>
 						<p>{SITE_DESCRIPTION}</p>

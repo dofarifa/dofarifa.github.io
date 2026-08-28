@@ -3,14 +3,10 @@ import { SITE_TAGLINE } from '../consts';
 ---
 
 <div class="hitokoto-card shell" data-hitokoto-card>
-	<span class="hitokoto-label">一言</span>
 	<a class="hitokoto-content" data-hitokoto-link href="https://hitokoto.cn/" target="_blank" rel="noreferrer">
 		<span data-hitokoto-text>{SITE_TAGLINE}</span>
 		<cite data-hitokoto-source>本站格言</cite>
 	</a>
-	<button class="hitokoto-refresh" type="button" data-hitokoto-refresh aria-label="换一句" title="换一句">
-		<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6v5h-5M4 18v-5h5M6.1 9A7 7 0 0 1 18.7 7.2L20 11M4 13l1.3 3.8A7 7 0 0 0 17.9 15" /></svg>
-	</button>
 </div>
 
 <script>
@@ -25,8 +21,8 @@ import { SITE_TAGLINE } from '../consts';
 	const text = card?.querySelector<HTMLElement>('[data-hitokoto-text]');
 	const source = card?.querySelector<HTMLElement>('[data-hitokoto-source]');
 	const link = card?.querySelector<HTMLAnchorElement>('[data-hitokoto-link]');
-	const refreshButton = card?.querySelector<HTMLButtonElement>('[data-hitokoto-refresh]');
 	const endpoint = new URL('https://v1.hitokoto.cn/');
+	let requestInFlight = false;
 
 	['d', 'e', 'i', 'k'].forEach((category) => endpoint.searchParams.append('c', category));
 	endpoint.searchParams.set('encode', 'json');
@@ -37,12 +33,11 @@ import { SITE_TAGLINE } from '../consts';
 	const asText = (value: unknown) => typeof value === 'string' ? value.trim() : '';
 
 	const loadHitokoto = async () => {
-		if (!card || !text || !source || !link || !refreshButton || refreshButton.disabled) return;
+		if (!card || !text || !source || !link || requestInFlight || document.hidden) return;
 
 		const controller = new AbortController();
 		const timeout = window.setTimeout(() => controller.abort(), 5000);
-		refreshButton.disabled = true;
-		refreshButton.setAttribute('aria-busy', 'true');
+		requestInFlight = true;
 		card.dataset.state = 'loading';
 
 		try {
@@ -66,52 +61,44 @@ import { SITE_TAGLINE } from '../consts';
 			const uuid = asText(data.uuid);
 			link.href = uuid ? `https://hitokoto.cn/?uuid=${encodeURIComponent(uuid)}` : 'https://hitokoto.cn/';
 			card.dataset.state = 'ready';
-			refreshButton.title = '换一句';
 		} catch {
 			card.dataset.state = 'error';
-			refreshButton.title = '获取失败，点击重试';
 		} finally {
 			window.clearTimeout(timeout);
-			refreshButton.disabled = false;
-			refreshButton.removeAttribute('aria-busy');
+			requestInFlight = false;
 		}
 	};
 
-	refreshButton?.addEventListener('click', loadHitokoto);
 	loadHitokoto();
+	const refreshTimer = window.setInterval(loadHitokoto, 60_000);
+	document.addEventListener('visibilitychange', () => {
+		if (!document.hidden) loadHitokoto();
+	});
+	window.addEventListener('pagehide', () => window.clearInterval(refreshTimer), { once: true });
 </script>
 
 <style>
 	.hitokoto-card {
-		display: grid;
+		display: flex;
 		min-height: 3rem;
-		grid-template-columns: auto minmax(0, 1fr) auto;
 		align-items: center;
-		gap: 1rem;
+		justify-content: center;
 		margin-top: .5rem;
-		padding: .45rem .55rem .45rem 1rem;
+		padding: .65rem 1rem;
 		border: 1px solid var(--line);
 		border-radius: var(--radius-small);
 		background: color-mix(in srgb, var(--surface) 90%, transparent);
 	}
-	.hitokoto-label { color: var(--accent-ink); font-size: .78rem; font-weight: 700; line-height: 1; }
 	.hitokoto-content { display: flex; min-width: 0; align-items: center; justify-content: center; gap: .7rem; color: var(--muted); font-size: .78rem; line-height: 1.45; text-decoration: none; }
 	.hitokoto-content:hover [data-hitokoto-text] { color: var(--accent-ink); }
 	[data-hitokoto-text] { overflow: hidden; min-width: 0; text-overflow: ellipsis; white-space: nowrap; transition: color .2s ease; }
 	.hitokoto-content cite { flex: none; color: color-mix(in srgb, var(--muted) 72%, transparent); font-size: .68rem; font-style: normal; }
 	.hitokoto-content cite::before { content: "— "; }
-	.hitokoto-refresh { display: grid; width: 2rem; height: 2rem; padding: 0; border: 0; place-items: center; border-radius: 50%; background: var(--ink); color: var(--surface); cursor: pointer; transition: background-color .2s ease, transform .2s ease; }
-	.hitokoto-refresh:hover { background: var(--accent); transform: rotate(-12deg); }
-	.hitokoto-refresh:disabled { cursor: wait; opacity: .72; }
-	.hitokoto-refresh svg { width: .95rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-	.hitokoto-refresh[aria-busy='true'] svg { animation: hitokoto-spin .75s linear infinite; }
-	.hitokoto-card[data-state='error'] .hitokoto-refresh { background: var(--accent); }
-	@keyframes hitokoto-spin { to { transform: rotate(360deg); } }
+	.hitokoto-card[data-state='loading'] .hitokoto-content { opacity: .72; }
 	@media (max-width: 700px) {
 		.hitokoto-content cite { display: none; }
 	}
 	@media (max-width: 520px) {
-		.hitokoto-card { gap: .6rem; padding-left: .8rem; }
-		.hitokoto-content { justify-content: flex-start; }
+		.hitokoto-card { padding-inline: .8rem; }
 	}
 </style>

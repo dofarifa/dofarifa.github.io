@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { SITE_ICON, SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
@@ -21,7 +22,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 <header class="site-header">
 	<nav class="shell nav" aria-label="主导航">
 		<a class="brand" href="/" aria-label={`${SITE_TITLE} 首页`}>
-			<span class="brand-mark" aria-hidden="true"><img src={SITE_ICON} alt="" width="34" height="34" /></span>
+			<span class="brand-mark" aria-hidden="true"><Image src={SITE_ICON} alt="" width={68} height={68} format="webp" quality={80} /></span>
 			<span>{SITE_TITLE}</span>
 		</a>
 
