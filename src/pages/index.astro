@@ -179,7 +179,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	.profile-card, .side-card { border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); }
 	.profile-card { position: relative; overflow: hidden; }
 	.side-card { overflow: hidden; }
-	.profile-cover { position: relative; min-height: 7.25rem; background: linear-gradient(135deg, color-mix(in srgb, var(--surface-lilac) 84%, white 16%), color-mix(in srgb, var(--surface-blue) 70%, white 30%)); }
+	.profile-cover { position: relative; min-height: 7.25rem; background: linear-gradient(135deg, #f1efff 0%, #f4f6ff 48%, #eaf7ff 100%); }
 	.profile-cover img { position: absolute; bottom: -2.8rem; left: 1.3rem; width: 5.6rem; height: 5.6rem; border: .4rem solid var(--surface); border-radius: 50%; object-fit: cover; box-shadow: var(--shadow); }
 	.profile-copy { padding: 3.65rem 1.3rem 1.3rem; }
 	.profile-copy h2, .side-card h2 { margin: 0; font-size: 1.1rem; }
@@ -199,7 +199,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	:global([data-theme='dark']) .hero { background: linear-gradient(135deg, color-mix(in srgb, var(--surface-lilac) 72%, #5a5372), color-mix(in srgb, var(--surface-blue) 72%, #4f665f)); }
 	:global([data-theme='dark']) .motion-board { background: color-mix(in srgb, var(--surface) 58%, transparent); }
 	:global([data-theme='dark']) .profile-card { background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, #ffffff 6%), var(--surface)); }
-	:global([data-theme='dark']) .profile-cover { background: linear-gradient(135deg, #6b6683, #5e7b89); }
+	:global([data-theme='dark']) .profile-cover { background: linear-gradient(135deg, #f1efff 0%, #f4f6ff 48%, #eaf7ff 100%); }
 	:global([data-theme='dark']) .profile-cover img { border-color: color-mix(in srgb, var(--surface) 80%, white 12%); box-shadow: 0 1rem 2.2rem rgba(0, 0, 0, .34); }
 	@keyframes drift-line { to { transform: translateX(3%) rotate(2deg); } }
 	@keyframes panel-breathe { to { transform: translateY(-2%) rotate(4deg) scale(1.04); } }

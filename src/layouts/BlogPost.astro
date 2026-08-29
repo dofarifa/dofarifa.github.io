@@ -132,7 +132,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-sidebar { position: sticky; top: 8.2rem; display: grid; gap: .75rem; }
 	.author-card, .toc-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1.15rem; background: var(--surface); box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); }
 	.author-card { position: relative; min-height: 17.5rem; padding: 11rem 1.15rem 1.2rem; }
-	.author-cover { position: absolute; inset: 0 0 auto; height: 9.4rem; background: linear-gradient(140deg, color-mix(in srgb, #67b687 80%, var(--surface)), color-mix(in srgb, var(--surface-blue) 74%, var(--surface))); }
+	.author-cover { position: absolute; inset: 0 0 auto; height: 9.4rem; background: linear-gradient(135deg, #f1efff 0%, #f4f6ff 48%, #eaf7ff 100%); }
 	.author-card img { position: absolute; top: 5.2rem; left: 1.15rem; width: 5.2rem; height: 5.2rem; border: .34rem solid color-mix(in srgb, var(--surface) 90%, transparent); border-radius: 50%; object-fit: cover; box-shadow: var(--shadow); }
 	.author-card h2 { margin: 0; font-size: 1rem; }
 	.author-card p { margin: .35rem 0 0; color: var(--muted); font-size: .74rem; line-height: 1.6; }
@@ -148,7 +148,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	:global([data-theme='dark']) .article-hero { background: linear-gradient(135deg, #2c664b, #5e8c77); }
 	:global([data-theme='dark']) .article-hero-shade { background: linear-gradient(90deg, rgba(37, 86, 62, .92), rgba(72, 98, 86, .8)); }
 	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
-	:global([data-theme='dark']) .author-cover { background: linear-gradient(140deg, #496e61, #3a4056); }
+	:global([data-theme='dark']) .author-cover { background: linear-gradient(135deg, #f1efff 0%, #f4f6ff 48%, #eaf7ff 100%); }
 	@media (max-width: 920px) {
 		.article-layout { grid-template-columns: 1fr; }
 		.article-sidebar { position: static; grid-template-columns: 1fr 1fr; }
