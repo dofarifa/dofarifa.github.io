@@ -11,6 +11,8 @@ export const MUSIC_BACKGROUND_IMAGE = '';
 export const MUSIC_BACKGROUND_VIDEO = '';
 // 首页顶部 Banner 支持 public 目录路径或完整 URL。留空时使用内置轻量动画背景。
 export const HOME_BANNER_VIDEO = '';
+// 头像卡片上半部分背景。支持完整 CSS background 值，例如渐变或 url('/images/avatar-bg.jpg') center / cover no-repeat。
+export const AVATAR_CARD_BACKGROUND = 'linear-gradient(135deg, #f1efff 0%, #f4f6ff 48%, #eaf7ff 100%)';
 
 // 更换图片时，将新文件放入 src/assets 并修改上方导入路径。
 export const SITE_ICON = avatarImage;
