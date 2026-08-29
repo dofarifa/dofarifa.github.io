@@ -2,46 +2,165 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_AVATAR, SITE_TITLE } from '../consts';
 import BaseLayout from './BaseLayout.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
-const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.props;
+interface Heading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+type Props = CollectionEntry<'blog'>['data'] & {
+	headings?: Heading[];
+	readingMinutes?: number;
+	wordCount?: number;
+};
+
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	tags,
+	headings = [],
+	readingMinutes = 1,
+	wordCount = 0,
+} = Astro.props;
+const visibleHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
 <BaseLayout title={title} description={description} image={heroImage}>
 	<main>
 		<article>
-			<header class="article-header shell">
-				<a class="back-link" href="/blog">← 返回文章</a>
-				<div class="article-meta"><FormattedDate date={pubDate} />{tags.length > 0 && <span>·</span>}{tags.map((tag) => <span>#{tag}</span>)}</div>
-				<h1>{title}</h1>
-				<p>{description}</p>
-				{updatedDate && <p class="updated">最后更新于 <FormattedDate date={updatedDate} /></p>}
+			<header class="article-hero">
+				{heroImage && <Image class="article-hero-bg" width={1800} height={920} src={heroImage} alt="" loading="eager" fetchpriority="high" />}
+				<div class="article-hero-shade" aria-hidden="true"></div>
+				<div class="shell article-hero-inner">
+					<a class="back-link" href="/blog">返回文章</a>
+					<div class="article-tags" aria-label="文章标签">
+						{tags.map((tag) => <a href={`/blog?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}
+					</div>
+					<h1>{title}</h1>
+					<p>{description}</p>
+					<div class="article-meta" aria-label="文章信息">
+						<span>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4M4 10h16M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" /></svg>
+							<FormattedDate date={pubDate} />
+						</span>
+						<span>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Zm3 12h10M9 8h5" /></svg>
+							{wordCount || '若干'} 字
+						</span>
+						<span>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+							{readingMinutes} 分钟
+						</span>
+						{updatedDate && (
+							<span>
+								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2M21 4v6h-6M21 12a9 9 0 0 1-15.5 6.2M3 20v-6h6" /></svg>
+								更新于 <FormattedDate date={updatedDate} />
+							</span>
+						)}
+					</div>
+				</div>
 			</header>
-			{heroImage && <div class="hero-image shell"><Image width={1180} height={650} src={heroImage} alt="" /></div>}
-			<div class="prose article-body"><slot /></div>
+
+			<div class="shell article-layout">
+				<div class="article-main">
+					<section class="article-summary" aria-label="文章摘要">
+						<div>
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12a2 2 0 0 1 2 2v11a3 3 0 0 1-3 3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm3 5h6M9 13h4" /></svg>
+							<strong>文章摘要</strong>
+						</div>
+						<p>{description}</p>
+					</section>
+					<div class="prose article-body"><slot /></div>
+				</div>
+
+				<aside class="article-sidebar" aria-label="文章侧边栏">
+					<section class="author-card">
+						<div class="author-cover" aria-hidden="true"></div>
+						<Image src={SITE_AVATAR} width={112} height={112} format="webp" quality={82} loading="lazy" alt={`${SITE_TITLE} 的头像`} />
+						<h2>{SITE_TITLE}</h2>
+						<p>记录技术、阅读与生活。</p>
+					</section>
+					{visibleHeadings.length > 0 && (
+						<nav class="toc-card" aria-label="文章目录">
+							<h2>目录</h2>
+							<ol>
+								{visibleHeadings.map((heading) => (
+									<li class={`depth-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>
+								))}
+							</ol>
+						</nav>
+					)}
+				</aside>
+			</div>
+
 			<footer class="article-end">
-				<span aria-hidden="true">✦</span>
 				<p>感谢你读到这里。</p>
-				<a href="/blog">继续阅读其他文章 →</a>
+				<a href="/blog">继续阅读其他文章</a>
 			</footer>
 		</article>
 	</main>
 </BaseLayout>
 
 <style>
-	.article-header { max-width: 880px; margin-top: 2rem; padding: clamp(3rem, 7vw, 5rem); border-radius: 2rem; background: var(--surface-peach); text-align: center; }
-	.back-link { display: inline-block; margin-bottom: 3rem; color: var(--muted); font-size: .82rem; text-decoration: none; }
-	.article-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; color: var(--accent); font-size: .78rem; font-weight: 700; }
-	.article-header h1 { margin: 1.25rem auto; font-size: clamp(3rem, 7vw, 6rem); letter-spacing: -.04em; }
-	.article-header > p:not(.updated) { max-width: 42rem; margin: 0 auto; color: var(--muted); font-size: 1.1rem; line-height: 1.8; }
-	.updated { color: var(--muted); font-size: .75rem; font-style: italic; }
-	.hero-image { overflow: hidden; max-height: 42rem; margin-top: 1.5rem; border-radius: 2rem; }
-	.hero-image :global(img) { width: 100%; height: 100%; object-fit: cover; }
-	.article-body { width: min(800px, calc(100% - 2rem)); margin: 3rem auto; padding: clamp(2rem, 5vw, 4rem); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow); }
-	.article-end { width: min(800px, calc(100% - 2rem)); margin: 3rem auto 0; padding: 2.5rem; border-radius: var(--radius-card); background: var(--surface-mint); text-align: center; }
-	.article-end span { color: var(--accent); font-size: 1.5rem; }
-	.article-end p { margin: .7rem 0; color: var(--muted); }
+	.article-hero { position: relative; overflow: hidden; min-height: clamp(27rem, 54vh, 36rem); margin-top: -5rem; padding-top: 6.5rem; background: linear-gradient(135deg, #62ad82, #9dd6b8); isolation: isolate; }
+	.article-hero::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 4.8rem; background: var(--paper); clip-path: polygon(0 42%, 52% 72%, 100% 40%, 100% 100%, 0 100%); content: ""; }
+	.article-hero-bg { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .28; filter: saturate(.88) contrast(.96); }
+	.article-hero-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, color-mix(in srgb, #4f9b72 84%, transparent), color-mix(in srgb, #b7ddc7 72%, transparent)); }
+	.article-hero-inner { position: relative; z-index: 1; display: grid; align-content: center; min-height: clamp(20rem, 44vh, 28rem); color: white; }
+	.back-link { width: fit-content; margin-bottom: 1.15rem; color: color-mix(in srgb, white 82%, transparent); font-size: .8rem; font-weight: 700; text-decoration: none; }
+	.back-link:hover { color: white; }
+	.article-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1.1rem; }
+	.article-tags a { padding: .36rem .62rem; border-radius: 999px; background: color-mix(in srgb, white 18%, transparent); color: white; font-size: .74rem; font-weight: 700; text-decoration: none; backdrop-filter: blur(12px); }
+	.article-hero h1 { max-width: 24ch; margin: 0; color: white; font-size: clamp(2.6rem, 6vw, 5rem); letter-spacing: -.04em; text-shadow: 0 .5rem 1.7rem rgba(27, 82, 56, .18); }
+	.article-hero-inner > p { max-width: 56rem; margin: 1.2rem 0 0; color: color-mix(in srgb, white 82%, transparent); font-size: 1rem; line-height: 1.8; }
+	.article-meta { display: flex; flex-wrap: wrap; gap: .95rem; margin-top: 1.25rem; color: color-mix(in srgb, white 78%, transparent); font-size: .78rem; font-weight: 650; }
+	.article-meta span { display: inline-flex; align-items: center; gap: .35rem; }
+	.article-meta svg { width: .9rem; height: .9rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9; }
+	.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; align-items: start; gap: 1rem; margin-top: -1rem; }
+	.article-main { min-width: 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: var(--radius-card); background: color-mix(in srgb, var(--surface) 92%, transparent); box-shadow: var(--shadow); }
+	.article-summary { padding: 1.05rem 1.2rem; border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--line)); border-radius: 1rem; background: color-mix(in srgb, var(--surface-lilac) 46%, var(--surface)); }
+	.article-summary div { display: inline-flex; align-items: center; gap: .42rem; color: var(--accent-ink); font-size: .82rem; font-weight: 800; }
+	.article-summary svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+	.article-summary p { margin: .6rem 0 0; color: var(--prose-ink); font-size: .9rem; line-height: 1.85; }
+	.article-body { max-width: 75ch; margin: 0 auto; padding: clamp(1.8rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.4rem); background: transparent; box-shadow: none; }
+	.article-sidebar { position: sticky; top: 8.2rem; display: grid; gap: .75rem; }
+	.author-card, .toc-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1.15rem; background: var(--surface); box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); }
+	.author-card { position: relative; min-height: 17.5rem; padding: 11rem 1.15rem 1.2rem; }
+	.author-cover { position: absolute; inset: 0 0 auto; height: 9.4rem; background: linear-gradient(140deg, color-mix(in srgb, #67b687 80%, var(--surface)), color-mix(in srgb, var(--surface-blue) 74%, var(--surface))); }
+	.author-card img { position: absolute; top: 5.2rem; left: 1.15rem; width: 5.2rem; height: 5.2rem; border: .34rem solid color-mix(in srgb, var(--surface) 90%, transparent); border-radius: 50%; object-fit: cover; box-shadow: var(--shadow); }
+	.author-card h2 { margin: 0; font-size: 1rem; }
+	.author-card p { margin: .35rem 0 0; color: var(--muted); font-size: .74rem; line-height: 1.6; }
+	.toc-card { padding: 1.15rem; }
+	.toc-card h2 { margin: 0 0 .65rem; font-size: .98rem; }
+	.toc-card ol { display: grid; gap: .2rem; max-height: min(26rem, 52vh); overflow: auto; margin: 0; padding: 0; list-style: none; }
+	.toc-card a { display: block; overflow: hidden; padding: .45rem .55rem; border-radius: .65rem; color: var(--muted); font-size: .76rem; line-height: 1.35; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
+	.toc-card a:hover { background: var(--accent-soft); color: var(--accent-ink); }
+	.toc-card .depth-3 a { padding-left: 1.2rem; font-size: .7rem; }
+	.article-end { width: min(800px, calc(100% - 2rem)); margin: 2rem auto 0; padding: 2rem; border-radius: var(--radius-card); background: var(--surface-mint); text-align: center; }
+	.article-end p { margin: 0 0 .65rem; color: var(--muted); }
 	.article-end a { font-size: .85rem; font-weight: 700; text-decoration: none; }
-	@media (max-width: 640px) { .article-header { width: calc(100% - 2rem); margin-top: 1rem; padding: 3rem 1.25rem; } .article-header h1 { font-size: 3.1rem; } .hero-image { width: calc(100% - 2rem); border-radius: var(--radius-card); } .article-body { margin-block: 1rem; padding: 2rem 1.25rem; } .article-end { margin-top: 1rem; } }
+	:global([data-theme='dark']) .article-hero { background: linear-gradient(135deg, #2c664b, #5e8c77); }
+	:global([data-theme='dark']) .article-hero-shade { background: linear-gradient(90deg, rgba(37, 86, 62, .92), rgba(72, 98, 86, .8)); }
+	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
+	:global([data-theme='dark']) .author-cover { background: linear-gradient(140deg, #496e61, #3a4056); }
+	@media (max-width: 920px) {
+		.article-layout { grid-template-columns: 1fr; }
+		.article-sidebar { position: static; grid-template-columns: 1fr 1fr; }
+	}
+	@media (max-width: 680px) {
+		.article-hero { min-height: 28rem; margin-top: -4.2rem; padding-top: 5.5rem; }
+		.article-hero::after { height: 3.6rem; }
+		.article-hero h1 { font-size: clamp(2.25rem, 11vw, 3.5rem); }
+		.article-layout { width: min(100% - 1rem, 1180px); margin-top: -.25rem; }
+		.article-main { padding: .75rem; border-radius: 1.15rem; }
+		.article-body { padding: 1.6rem .4rem; }
+		.article-sidebar { grid-template-columns: 1fr; }
+		.article-meta { gap: .65rem; }
+	}
 </style>

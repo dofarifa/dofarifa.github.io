@@ -9,6 +9,8 @@ export const NETEASE_PLAYLIST_ID = '3058435980';
 // 音乐页背景支持 public 目录路径或完整 URL。视频优先于图片；都留空时使用当前歌曲专辑封面。
 export const MUSIC_BACKGROUND_IMAGE = '';
 export const MUSIC_BACKGROUND_VIDEO = '';
+// 首页顶部 Banner 支持 public 目录路径或完整 URL。留空时使用内置轻量动画背景。
+export const HOME_BANNER_VIDEO = '';
 
 // 更换图片时，将新文件放入 src/assets 并修改上方导入路径。
 export const SITE_ICON = avatarImage;
