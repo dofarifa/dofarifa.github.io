@@ -65,11 +65,16 @@
 		updateControls(theme);
 	};
 
-	document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
-		button.addEventListener('click', () => {
-			applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', true);
+	const setupThemeControls = () => {
+		document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+			if (button.dataset.initialized === 'true') return;
+			button.dataset.initialized = 'true';
+			button.addEventListener('click', () => {
+				applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', true);
+			});
 		});
-	});
+		updateControls(currentTheme());
+	};
 
 	window.addEventListener('storage', (event) => {
 		if (event.key !== storageKey) return;
@@ -77,7 +82,8 @@
 		applyTheme(storedTheme ?? 'light', false);
 	});
 
-	updateControls(currentTheme());
+	setupThemeControls();
+	document.addEventListener('astro:page-load', setupThemeControls);
 </script>
 
 <style>

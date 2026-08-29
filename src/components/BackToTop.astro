@@ -3,12 +3,19 @@
 </button>
 
 <script>
-	const button = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
-	const updateVisibility = () => button?.classList.toggle('is-visible', window.scrollY > 480);
+	const updateVisibility = () => document.querySelector<HTMLButtonElement>('[data-back-to-top]')
+		?.classList.toggle('is-visible', window.scrollY > 480);
+	const setupBackToTop = () => {
+		const button = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
+		if (!button || button.dataset.initialized === 'true') return;
+		button.dataset.initialized = 'true';
+		button.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+		updateVisibility();
+	};
 
-	button?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 	window.addEventListener('scroll', updateVisibility, { passive: true });
-	updateVisibility();
+	setupBackToTop();
+	document.addEventListener('astro:page-load', setupBackToTop);
 </script>
 
 <style>

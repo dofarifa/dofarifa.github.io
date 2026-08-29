@@ -2,9 +2,9 @@
 import { SITE_TAGLINE } from '../consts';
 ---
 
-<div class="hitokoto-card" data-hitokoto-card>
-	<a class="hitokoto-content" data-hitokoto-link href="https://hitokoto.cn/" target="_blank" rel="noreferrer">
-		<span data-hitokoto-text>{SITE_TAGLINE}</span>
+<div class="hitokoto-card" data-hitokoto-card transition:persist="site-hitokoto">
+	<a class="hitokoto-content" data-hitokoto-link href="https://hitokoto.cn/" target="_blank" rel="noreferrer" aria-label={SITE_TAGLINE}>
+		<span data-hitokoto-text aria-hidden="true">{SITE_TAGLINE}</span>
 		<cite data-hitokoto-source>本站格言</cite>
 	</a>
 </div>
@@ -22,7 +22,9 @@ import { SITE_TAGLINE } from '../consts';
 	const source = card?.querySelector<HTMLElement>('[data-hitokoto-source]');
 	const link = card?.querySelector<HTMLAnchorElement>('[data-hitokoto-link]');
 	const endpoint = new URL('https://v1.hitokoto.cn/');
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 	let requestInFlight = false;
+	let typingToken = 0;
 
 	['d', 'e', 'i', 'k'].forEach((category) => endpoint.searchParams.append('c', category));
 	endpoint.searchParams.set('encode', 'json');
@@ -31,6 +33,28 @@ import { SITE_TAGLINE } from '../consts';
 	endpoint.searchParams.set('max_length', '28');
 
 	const asText = (value: unknown) => typeof value === 'string' ? value.trim() : '';
+	const typeSentence = (sentence: string) => {
+		if (!card || !text) return;
+		const token = ++typingToken;
+		const characters = Array.from(sentence);
+		if (reducedMotion.matches) {
+			text.textContent = sentence;
+			card.dataset.typing = 'false';
+			return;
+		}
+
+		text.textContent = '';
+		card.dataset.typing = 'true';
+		let index = 0;
+		const typeNext = () => {
+			if (token !== typingToken || !text) return;
+			text.textContent += characters[index] ?? '';
+			index += 1;
+			if (index < characters.length) window.setTimeout(typeNext, 58);
+			else card.dataset.typing = 'false';
+		};
+		typeNext();
+	};
 
 	const loadHitokoto = async () => {
 		if (!card || !text || !source || !link || requestInFlight || document.hidden) return;
@@ -56,10 +80,11 @@ import { SITE_TAGLINE } from '../consts';
 			const origin = asText(data.from);
 			const attribution = [author, origin].filter((item, index, items) => item && items.indexOf(item) === index).join(' · ');
 
-			text.textContent = sentence;
 			source.textContent = attribution || '一言';
+			link.setAttribute('aria-label', `${sentence}，${attribution || '一言'}`);
 			const uuid = asText(data.uuid);
 			link.href = uuid ? `https://hitokoto.cn/?uuid=${encodeURIComponent(uuid)}` : 'https://hitokoto.cn/';
+			typeSentence(sentence);
 			card.dataset.state = 'ready';
 		} catch {
 			card.dataset.state = 'error';
@@ -82,21 +107,24 @@ import { SITE_TAGLINE } from '../consts';
 		display: flex;
 		width: 100%;
 		min-width: 0;
-		min-height: 3rem;
+		min-height: 2rem;
 		align-items: center;
 		justify-content: center;
-		padding: .7rem 1rem;
-		border: 1px solid var(--line);
-		border-radius: var(--radius-small);
-		background: var(--surface);
+		padding: .2rem 1rem 0;
 	}
-	.hitokoto-content { display: flex; width: 100%; min-width: 0; align-items: center; justify-content: center; gap: .7rem; color: var(--muted); font-size: .78rem; line-height: 1.45; text-decoration: none; }
+	.hitokoto-content { display: flex; width: fit-content; max-width: 100%; min-width: 0; align-items: center; justify-content: center; gap: .6rem; color: var(--muted); font-family: "STKaiti", "KaiTi", "Noto Serif SC", serif; font-size: .72rem; letter-spacing: .025em; line-height: 1.45; text-decoration: none; }
 	.hitokoto-content:hover [data-hitokoto-text] { color: var(--accent-ink); }
 	[data-hitokoto-text] { overflow: hidden; min-width: 0; text-overflow: ellipsis; white-space: nowrap; transition: color .2s ease; }
-	.hitokoto-content cite { flex: none; color: color-mix(in srgb, var(--muted) 72%, transparent); font-size: .68rem; font-style: normal; }
+	[data-hitokoto-text]::after { display: inline-block; width: 1px; height: .9em; margin-left: .18rem; background: currentColor; content: ""; animation: hitokoto-caret .9s steps(1, end) infinite; vertical-align: -.06em; }
+	.hitokoto-content cite { flex: none; color: var(--muted); font-family: var(--font-body); font-size: .65rem; font-style: normal; letter-spacing: 0; }
 	.hitokoto-content cite::before { content: "— "; }
 	.hitokoto-card[data-state='loading'] .hitokoto-content { opacity: .72; }
+	@keyframes hitokoto-caret { 50% { opacity: 0; } }
 	@media (max-width: 700px) {
 		.hitokoto-content cite { display: none; }
+		.hitokoto-content { font-size: .68rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		[data-hitokoto-text]::after { display: none; }
 	}
 </style>

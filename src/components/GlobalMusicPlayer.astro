@@ -1,0 +1,91 @@
+<aside
+	class="mini-player"
+	data-mini-player
+	data-visible="false"
+	data-expanded="false"
+	aria-label="正在播放"
+>
+	<div class="mini-backdrop" data-mini-backdrop aria-hidden="true"></div>
+	<a class="mini-track" href="/music" aria-label="打开歌单页面">
+		<span class="mini-cover" data-mini-cover aria-hidden="true"></span>
+		<span class="mini-copy">
+			<strong data-mini-title>尚未播放</strong>
+			<small data-mini-author>网易云音乐</small>
+		</span>
+	</a>
+	<div class="mini-actions">
+		<button type="button" data-mini-previous aria-label="上一首" title="上一首">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 6l-8 6 8 6V6Z" /></svg>
+		</button>
+		<button class="mini-play" type="button" data-mini-play aria-label="播放">
+			<svg data-mini-play-icon viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" /></svg>
+			<svg data-mini-pause-icon viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M8 5v14M16 5v14" /></svg>
+		</button>
+		<button type="button" data-mini-next aria-label="下一首" title="下一首">
+			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 6l8 6-8 6V6Z" /></svg>
+		</button>
+	</div>
+	<span class="mini-progress" data-mini-progress aria-hidden="true"></span>
+	<audio data-global-audio data-initial-volume="0.65" preload="metadata" transition:persist="kkkk-global-music-audio"></audio>
+</aside>
+
+<script src="../scripts/global-music-player.ts"></script>
+
+<style>
+	.mini-player {
+		position: fixed;
+		z-index: 30;
+		left: max(1rem, calc((100vw - 1180px) / 2 - 4.4rem));
+		bottom: 1.2rem;
+		display: grid;
+		overflow: hidden;
+		width: min(18rem, calc(100% - 2rem));
+		min-height: 4.4rem;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: .65rem;
+		padding: .48rem .58rem .48rem .52rem;
+		border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--surface) 88%, transparent);
+		box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--ink) 16%, transparent);
+		backdrop-filter: blur(20px);
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(.55rem);
+		visibility: hidden;
+		transition: opacity .2s ease, transform .28s cubic-bezier(.22, 1, .36, 1), visibility .2s ease;
+		isolation: isolate;
+	}
+	.mini-player[data-visible='true'] { opacity: 1; pointer-events: auto; transform: translateY(0); visibility: visible; }
+	.mini-backdrop { position: absolute; z-index: -1; inset: -1rem; background: var(--surface-lilac) center / cover no-repeat; filter: blur(20px) saturate(1.05); opacity: .22; transition: background-image .6s cubic-bezier(.22, 1, .36, 1); }
+	.mini-track { display: flex; overflow: hidden; min-width: 0; align-items: center; gap: .7rem; color: var(--ink); text-decoration: none; }
+	.mini-cover { width: 3.35rem; height: 3.35rem; flex: none; border-radius: 50%; background: var(--surface-lilac) center / cover no-repeat; box-shadow: 0 .3rem .9rem color-mix(in srgb, var(--ink) 16%, transparent); }
+	.mini-copy { overflow: hidden; min-width: 0; padding-right: .25rem; }
+	.mini-copy strong, .mini-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.mini-copy strong { font-size: .78rem; font-weight: 720; letter-spacing: -.015em; line-height: 1.35; }
+	.mini-copy small { margin-top: .18rem; color: var(--muted); font-size: .64rem; line-height: 1.3; }
+	.mini-actions { display: flex; overflow: hidden; width: 0; align-items: center; gap: .25rem; opacity: 0; pointer-events: none; transform: translateX(-.35rem); transition: opacity .18s ease, transform .28s cubic-bezier(.22, 1, .36, 1); }
+	.mini-player:hover, .mini-player:focus-within, .mini-player[data-expanded='true'] { width: min(24rem, calc(100% - 2rem)); }
+	.mini-player:hover .mini-actions, .mini-player:focus-within .mini-actions, .mini-player[data-expanded='true'] .mini-actions { width: 7.2rem; opacity: 1; pointer-events: auto; transform: translateX(0); }
+	.mini-actions button { display: grid; width: 2.2rem; height: 2.2rem; padding: 0; border: 0; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--ink); cursor: pointer; transition: background-color .2s ease, color .2s ease, transform .2s cubic-bezier(.22, 1, .36, 1); }
+	.mini-actions button:hover { background: var(--accent-soft); color: var(--accent-ink); transform: translateY(-1px); }
+	.mini-actions .mini-play { width: 2.75rem; height: 2.75rem; background: var(--accent); color: var(--accent-contrast); box-shadow: 0 .35rem 1rem color-mix(in srgb, var(--accent) 28%, transparent); }
+	.mini-actions .mini-play:hover { background: var(--accent-ink); color: var(--accent-contrast); }
+	.mini-actions svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+	.mini-actions [data-mini-play-icon] { fill: currentColor; stroke: none; transform: translateX(.05rem); }
+	.mini-progress { position: absolute; right: 1.05rem; bottom: .22rem; left: 1.05rem; height: .14rem; border-radius: 999px; background: linear-gradient(to right, var(--accent) var(--mini-progress, 0%), color-mix(in srgb, var(--muted) 24%, transparent) var(--mini-progress, 0%)); }
+	@media (max-width: 640px) {
+		.mini-player { right: auto; bottom: .6rem; left: .6rem; width: min(18rem, calc(100% - 1.2rem)); min-height: 4rem; padding: .42rem .48rem; }
+		.mini-player:hover, .mini-player:focus-within, .mini-player[data-expanded='true'] { width: calc(100% - 1.2rem); }
+		.mini-cover { width: 3rem; height: 3rem; }
+		.mini-actions button:first-child { display: none; }
+		.mini-actions .mini-play { width: 2.6rem; height: 2.6rem; }
+	}
+	@media (hover: none), (pointer: coarse) {
+		.mini-player[data-expanded='true'] .mini-actions { width: 5rem; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.mini-actions button { transition: none; }
+	}
+</style>

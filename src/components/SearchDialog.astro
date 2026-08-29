@@ -50,38 +50,42 @@ const { posts } = Astro.props;
 </dialog>
 
 <script>
-	const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
-	const input = dialog?.querySelector<HTMLInputElement>('[data-search-input]');
-	const items = [...(dialog?.querySelectorAll<HTMLElement>('[data-search-item]') ?? [])];
-	const summary = dialog?.querySelector<HTMLElement>('[data-search-summary]');
-	const empty = dialog?.querySelector<HTMLElement>('[data-search-empty]');
+	const setupSearch = () => {
+		const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+		if (!dialog || dialog.dataset.initialized === 'true') return;
+		dialog.dataset.initialized = 'true';
+		const input = dialog.querySelector<HTMLInputElement>('[data-search-input]');
+		const items = [...dialog.querySelectorAll<HTMLElement>('[data-search-item]')];
+		const summary = dialog.querySelector<HTMLElement>('[data-search-summary]');
+		const empty = dialog.querySelector<HTMLElement>('[data-search-empty]');
 
-	const filterResults = () => {
-		const query = input?.value.trim().toLocaleLowerCase('zh-CN') ?? '';
-		let visibleCount = 0;
+		const filterResults = () => {
+			const query = input?.value.trim().toLocaleLowerCase('zh-CN') ?? '';
+			let visibleCount = 0;
+			items.forEach((item) => {
+				const matches = !query || item.dataset.searchText?.includes(query);
+				item.hidden = !matches;
+				if (matches) visibleCount += 1;
+			});
+			if (summary) summary.textContent = query ? `找到 ${visibleCount} 篇文章` : `共 ${visibleCount} 篇文章`;
+			if (empty) empty.hidden = visibleCount > 0;
+		};
 
-		items.forEach((item) => {
-			const matches = !query || item.dataset.searchText?.includes(query);
-			item.hidden = !matches;
-			if (matches) visibleCount += 1;
+		document.querySelectorAll<HTMLButtonElement>('[data-search-open]').forEach((button) => {
+			button.addEventListener('click', () => {
+				dialog.showModal();
+				requestAnimationFrame(() => input?.focus());
+			});
 		});
-
-		if (summary) summary.textContent = query ? `找到 ${visibleCount} 篇文章` : `共 ${visibleCount} 篇文章`;
-		if (empty) empty.hidden = visibleCount > 0;
+		dialog.querySelector<HTMLButtonElement>('[data-search-close]')?.addEventListener('click', () => dialog.close());
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog) dialog.close();
+		});
+		input?.addEventListener('input', filterResults);
 	};
 
-	document.querySelectorAll<HTMLButtonElement>('[data-search-open]').forEach((button) => {
-		button.addEventListener('click', () => {
-			dialog?.showModal();
-			requestAnimationFrame(() => input?.focus());
-		});
-	});
-
-	dialog?.querySelector<HTMLButtonElement>('[data-search-close]')?.addEventListener('click', () => dialog.close());
-	dialog?.addEventListener('click', (event) => {
-		if (event.target === dialog) dialog.close();
-	});
-	input?.addEventListener('input', filterResults);
+	setupSearch();
+	document.addEventListener('astro:page-load', setupSearch);
 </script>
 
 <style>

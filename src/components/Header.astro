@@ -28,13 +28,13 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		<div class="nav-links desktop-nav">
 			<HeaderLink href="/">首页</HeaderLink>
 			<HeaderLink href="/blog">文章</HeaderLink>
-			<HeaderLink href="/music">音乐</HeaderLink>
+			<HeaderLink href="/music">歌单</HeaderLink>
 			<HeaderLink href="/about">关于</HeaderLink>
 		</div>
 
 		<div class="header-tools">
-			<button class="tool-button" type="button" data-random-post aria-label="随机阅读一篇文章" title="随机阅读">
-				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" /></svg>
+			<button class="tool-button random-button" type="button" data-random-post aria-label="随机阅读一篇文章" title="随机阅读">
+				<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="8.3" cy="8.3" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="15.7" cy="15.7" r="1" /></svg>
 			</button>
 			<button class="tool-button" type="button" data-search-open aria-label="搜索文章" title="搜索文章">
 				<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.2 4.2" /></svg>
@@ -51,7 +51,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 				<div class="mobile-menu-panel">
 					<HeaderLink href="/">首页</HeaderLink>
 					<HeaderLink href="/blog">文章</HeaderLink>
-					<HeaderLink href="/music">音乐</HeaderLink>
+					<HeaderLink href="/music">歌单</HeaderLink>
 					<HeaderLink href="/about">关于</HeaderLink>
 					<a href="/rss.xml">RSS 订阅</a>
 				</div>
@@ -65,21 +65,29 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 <script type="application/json" id="random-post-urls" set:html={JSON.stringify(randomPostUrls)} />
 
 <script>
-	const randomPostData = document.querySelector<HTMLScriptElement>('#random-post-urls');
-	const postUrls: string[] = randomPostData ? JSON.parse(randomPostData.textContent ?? '[]') : [];
+	import { navigate } from 'astro:transitions/client';
 
-	document.querySelectorAll<HTMLButtonElement>('[data-random-post]').forEach((button) => {
-		button.addEventListener('click', () => {
-			if (!postUrls.length) return;
-			window.location.href = postUrls[Math.floor(Math.random() * postUrls.length)];
+	const setupHeader = () => {
+		const randomPostData = document.querySelector<HTMLScriptElement>('#random-post-urls');
+		const postUrls: string[] = randomPostData ? JSON.parse(randomPostData.textContent ?? '[]') : [];
+
+		document.querySelectorAll<HTMLButtonElement>('[data-random-post]').forEach((button) => {
+			if (button.dataset.initialized === 'true') return;
+			button.dataset.initialized = 'true';
+			button.addEventListener('click', () => {
+				if (!postUrls.length) return;
+				void navigate(postUrls[Math.floor(Math.random() * postUrls.length)]);
+			});
 		});
-	});
+	};
 
 	document.addEventListener('click', (event) => {
 		document.querySelectorAll<HTMLDetailsElement>('.mobile-menu[open]').forEach((menu) => {
 			if (!menu.contains(event.target as Node)) menu.removeAttribute('open');
 		});
 	});
+	setupHeader();
+	document.addEventListener('astro:page-load', setupHeader);
 </script>
 
 <style>
@@ -122,6 +130,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 	}
 	.tool-button:hover, .mobile-menu summary:hover { background: var(--accent-soft); color: var(--accent-ink); transform: translateY(-1px); }
 	.tool-button svg, .mobile-menu summary svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+	.random-button svg circle { fill: currentColor; stroke: none; }
 	.rss-link svg { fill: currentColor; stroke: none; }
 	.mobile-menu { position: relative; display: none; }
 	.mobile-menu summary { list-style: none; }
