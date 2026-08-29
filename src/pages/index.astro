@@ -122,8 +122,8 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 <style>
 	.hero { position: relative; display: grid; overflow: hidden; min-height: 34rem; grid-template-columns: 1.12fr .88fr; align-items: center; gap: clamp(3rem, 7vw, 6rem); margin-top: 1rem; padding: clamp(2.5rem, 6vw, 5rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2rem; background: linear-gradient(135deg, var(--surface-lilac), color-mix(in srgb, var(--surface-blue) 72%, var(--surface-peach))); box-shadow: inset 0 -1px 0 color-mix(in srgb, white 64%, transparent); isolation: isolate; }
-	.hero-video { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.92) contrast(.96); opacity: .42; }
-	.hero::after { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--surface-lilac) 76%, transparent), color-mix(in srgb, var(--surface-blue) 58%, transparent)); content: ""; pointer-events: none; }
+	.hero-video { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; filter: saturate(.98) contrast(.95) brightness(1.04); opacity: .62; }
+	.hero::after { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--surface-lilac) 82%, transparent), color-mix(in srgb, var(--surface-blue) 54%, transparent)); content: ""; pointer-events: none; }
 	.hero-atmosphere { position: absolute; z-index: -1; inset: 0; overflow: hidden; pointer-events: none; }
 	.flow-line { position: absolute; left: -8%; width: 116%; height: 18%; border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); border-right: 0; border-left: 0; border-radius: 50%; opacity: .72; transform: rotate(-3deg); animation: drift-line 14s cubic-bezier(.22, 1, .36, 1) infinite alternate; }
 	.line-one { top: 14%; }
@@ -197,6 +197,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	.tag-cloud a:hover { color: var(--accent-ink); }
 	.tag-cloud sup { margin-left: .12rem; color: var(--accent); font-size: .6rem; }
 	:global([data-theme='dark']) .hero { background: linear-gradient(135deg, color-mix(in srgb, var(--surface-lilac) 72%, #5a5372), color-mix(in srgb, var(--surface-blue) 72%, #4f665f)); }
+	:global([data-theme='dark']) .hero-video { filter: saturate(.9) contrast(.96) brightness(.72); opacity: .5; }
 	:global([data-theme='dark']) .motion-board { background: color-mix(in srgb, var(--surface) 58%, transparent); }
 	:global([data-theme='dark']) .profile-card { background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, #ffffff 6%), var(--surface)); }
 	:global([data-theme='dark']) .profile-cover { background: var(--avatar-card-background); }
