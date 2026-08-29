@@ -76,6 +76,7 @@ const initMusicPlayer = (root: HTMLElement) => {
 	const query = <T extends Element>(selector: string) => root.querySelector<T>(selector);
 	const audio = query<HTMLAudioElement>('[data-audio]');
 	const backdrop = query<HTMLElement>('[data-player-backdrop]');
+	const controlsBackdrop = query<HTMLElement>('[data-controls-backdrop]');
 	const trackList = query<HTMLElement>('[data-track-list]');
 	const trackCount = query<HTMLElement>('[data-track-count]');
 	const playlistSearch = query<HTMLInputElement>('[data-playlist-search]');
@@ -111,7 +112,7 @@ const initMusicPlayer = (root: HTMLElement) => {
 	const notice = query<HTMLElement>('[data-player-notice]');
 
 	if (
-		!audio || !backdrop || !trackList || !trackCount || !playlistSearch || !emptySearch ||
+		!audio || !backdrop || !controlsBackdrop || !trackList || !trackCount || !playlistSearch || !emptySearch ||
 		!lyricsScroll || !activeLyric || !lyricTitle || !lyricAuthor || !lyricCover || !nowCover || !nowTitle ||
 		!nowAuthor || !summary || !playerState || !stateTitle || !stateMessage || !retryButton ||
 		!playButton || !playIcon || !pauseIcon || !previousButton || !nextButton || !shuffleButton ||
@@ -326,6 +327,7 @@ const initMusicPlayer = (root: HTMLElement) => {
 		nowAuthor.textContent = track.author || '未知歌手';
 		setBackgroundImage(lyricCover, track.pic);
 		setBackgroundImage(nowCover, track.pic);
+		setBackgroundImage(controlsBackdrop, track.pic);
 		if (!customBackground || hasBackgroundVideo) setBackgroundImage(backdrop, track.pic);
 		if (customBackground && !hasBackgroundVideo) setBackgroundImage(backdrop, customBackground);
 		progress.value = '0';

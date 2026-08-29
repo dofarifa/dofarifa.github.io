@@ -14,7 +14,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 ---
 
 <BaseLayout
-	title={`音乐 · ${SITE_TITLE}`}
+	title={`歌单 · ${SITE_TITLE}`}
 	description="浏览 kkkk 收藏的音乐，在同步歌词与沉浸背景中播放歌单。"
 	designContract={designContract}
 >
@@ -24,6 +24,6 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 </BaseLayout>
 
 <style>
-	.music-page { padding-block: 1.5rem 0; }
-	@media (max-width: 640px) { .music-page { padding-top: 1rem; } }
+	.music-page { width: min(1320px, calc(100% - 3rem)); padding-block: 1.5rem 0; }
+	@media (max-width: 640px) { .music-page { width: min(100% - 1.5rem, 1320px); padding-top: 1rem; } }
 </style>

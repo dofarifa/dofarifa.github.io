@@ -26,7 +26,7 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 	<div class="player-surface">
 		<header class="player-heading">
 			<div>
-				<h1>音乐</h1>
+				<h1>歌单</h1>
 				<p data-player-summary>正在读取你的网易云收藏</p>
 			</div>
 			<a href={playlistUrl} target="_blank" rel="noreferrer">
@@ -78,6 +78,9 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 		</div>
 
 		<footer class="player-controls">
+			<div class="controls-backdrop" data-controls-backdrop aria-hidden="true"></div>
+			<div class="controls-shade" aria-hidden="true"></div>
+
 			<div class="now-playing">
 				<div class="now-cover" data-now-cover aria-hidden="true"></div>
 				<div>
@@ -133,8 +136,8 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 	.music-player {
 		position: relative;
 		overflow: hidden;
-		height: min(50rem, calc(100vh - 7.5rem));
-		min-height: 40rem;
+		height: min(54rem, calc(100vh - 6.5rem));
+		min-height: 43rem;
 		border-radius: var(--radius-card);
 		background: var(--surface-lilac);
 		box-shadow: var(--shadow-raised);
@@ -194,44 +197,47 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 	.state-equalizer i:nth-child(3) { height: 65%; animation-delay: -.25s; }
 	.state-equalizer i:nth-child(4) { height: 78%; animation-delay: -.65s; }
 	.music-player[data-state='error'] .state-equalizer i { animation-play-state: paused; }
-	.player-controls { display: grid; min-height: 7.2rem; grid-template-columns: minmax(12rem, .9fr) minmax(22rem, 1.35fr) minmax(9rem, .65fr); align-items: center; gap: 1.5rem; padding: 1rem 1.4rem; border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent); background: color-mix(in srgb, var(--surface) 54%, transparent); }
-	.now-playing { display: flex; min-width: 0; align-items: center; gap: .8rem; }
-	.now-cover { width: 3.2rem; height: 3.2rem; flex: none; border-radius: .85rem; background: var(--surface-lilac) center / cover no-repeat; }
+	.player-controls { position: relative; display: grid; overflow: hidden; min-height: 8.4rem; grid-template-columns: minmax(14rem, .95fr) minmax(24rem, 1.45fr) minmax(10rem, .7fr); align-items: center; gap: clamp(1.25rem, 2.5vw, 2.5rem); padding: 1.15rem 1.65rem; border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent); background: var(--surface); font-family: var(--font-body); isolation: isolate; }
+	.controls-backdrop, .controls-shade { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+	.controls-backdrop { z-index: -2; background: var(--surface-lilac) center 44% / cover no-repeat; filter: blur(18px) saturate(1.12); opacity: .88; transform: scale(1.1); transition: background-image .7s cubic-bezier(.22, 1, .36, 1); }
+	.controls-shade { z-index: -1; background: color-mix(in srgb, var(--surface) 68%, transparent); backdrop-filter: blur(14px); }
+	.now-playing { display: flex; min-width: 0; align-items: center; gap: 1rem; }
+	.now-cover { width: 4rem; height: 4rem; flex: none; border-radius: 1rem; background: var(--surface-lilac) center / cover no-repeat; box-shadow: 0 .45rem 1.25rem color-mix(in srgb, var(--ink) 18%, transparent); }
 	.now-playing > div:last-child { overflow: hidden; min-width: 0; }
 	.now-playing strong, .now-playing span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-	.now-playing strong { font-size: .78rem; }
-	.now-playing span { margin-top: .15rem; color: var(--muted); font-size: .66rem; }
-	.control-center { display: grid; gap: .55rem; }
-	.transport-controls { display: flex; align-items: center; justify-content: center; gap: .38rem; }
-	.icon-button, .play-button { position: relative; display: grid; padding: 0; border: 0; place-items: center; border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; }
-	.icon-button { width: 2.3rem; height: 2.3rem; }
-	.icon-button:hover:not(:disabled) { background: color-mix(in srgb, var(--surface) 68%, transparent); }
-	.icon-button.active { background: var(--accent-soft); color: var(--accent-ink); }
-	.icon-button svg { width: 1rem; height: 1rem; }
-	.play-button { width: 2.9rem; height: 2.9rem; background: var(--accent); color: var(--accent-contrast); }
-	.play-button:hover:not(:disabled) { background: var(--accent-ink); }
-	.play-button svg { width: 1.15rem; height: 1.15rem; }
-	.play-button [data-play-icon] { fill: currentColor; stroke: none; }
+	.now-playing strong { font-size: .9rem; font-weight: 720; letter-spacing: -.015em; line-height: 1.3; }
+	.now-playing span { margin-top: .28rem; color: color-mix(in srgb, var(--muted) 92%, var(--ink)); font-size: .72rem; font-weight: 520; line-height: 1.35; }
+	.control-center { display: grid; width: 100%; gap: .72rem; justify-self: center; }
+	.transport-controls { display: flex; align-items: center; justify-content: center; gap: .55rem; }
+	.icon-button, .play-button { position: relative; display: grid; padding: 0; border: 1px solid color-mix(in srgb, var(--line) 76%, transparent); place-items: center; background: color-mix(in srgb, var(--surface) 56%, transparent); color: var(--ink); cursor: pointer; box-shadow: 0 .22rem .7rem color-mix(in srgb, var(--ink) 8%, transparent); transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s cubic-bezier(.22, 1, .36, 1), box-shadow .2s ease; }
+	.icon-button { width: 2.65rem; height: 2.65rem; border-radius: .95rem; }
+	.icon-button:hover:not(:disabled) { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); background: color-mix(in srgb, var(--surface) 82%, var(--accent-soft)); color: var(--accent-ink); transform: translateY(-1px); }
+	.icon-button.active { border-color: color-mix(in srgb, var(--accent) 42%, transparent); background: var(--accent-soft); color: var(--accent-ink); }
+	.icon-button svg { width: 1.05rem; height: 1.05rem; }
+	.play-button { width: 3.4rem; height: 3.4rem; border-color: transparent; border-radius: 1.2rem; background: var(--accent); color: var(--accent-contrast); box-shadow: 0 .55rem 1.25rem color-mix(in srgb, var(--accent) 28%, transparent); }
+	.play-button:hover:not(:disabled) { background: var(--accent-ink); transform: translateY(-1px) scale(1.025); box-shadow: 0 .7rem 1.5rem color-mix(in srgb, var(--accent) 34%, transparent); }
+	.play-button svg { width: 1.2rem; height: 1.2rem; }
+	.play-button [data-play-icon] { fill: currentColor; stroke: none; transform: translateX(.07rem); }
 	.repeat-one { position: absolute; right: .12rem; bottom: .12rem; display: grid; width: .8rem; height: .8rem; place-items: center; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); font-size: .5rem; font-weight: 800; }
-	.timeline { display: grid; grid-template-columns: 2.7rem minmax(0, 1fr) 2.7rem; align-items: center; gap: .55rem; }
-	.timeline time { color: var(--muted); font-size: .62rem; font-variant-numeric: tabular-nums; }
+	.timeline { display: grid; width: min(100%, 42rem); grid-template-columns: 2.8rem minmax(0, 1fr) 2.8rem; align-items: center; gap: .7rem; margin-inline: auto; }
+	.timeline time { color: color-mix(in srgb, var(--muted) 90%, var(--ink)); font-size: .68rem; font-weight: 560; font-variant-numeric: tabular-nums; line-height: 1; }
 	.timeline time:last-child { text-align: right; }
-	input[type='range'] { height: 1rem; margin: 0; accent-color: var(--accent); cursor: pointer; }
+	input[type='range'] { height: 1.1rem; margin: 0; accent-color: var(--accent); cursor: pointer; }
 	input[type='range']:disabled { cursor: default; opacity: .5; }
-	input[type='range']::-webkit-slider-runnable-track { height: .22rem; border-radius: 999px; background: color-mix(in srgb, var(--muted) 28%, transparent); }
-	input[type='range']::-webkit-slider-thumb { width: .8rem; height: .8rem; margin-top: -.29rem; border: 0; border-radius: 50%; background: var(--accent); -webkit-appearance: none; }
-	.volume-control { display: flex; align-items: center; justify-content: flex-end; gap: .5rem; }
-	.volume-control input { width: min(7rem, 10vw); }
+	input[type='range']::-webkit-slider-runnable-track { height: .26rem; border-radius: 999px; background: color-mix(in srgb, var(--muted) 34%, transparent); }
+	input[type='range']::-webkit-slider-thumb { width: .88rem; height: .88rem; margin-top: -.31rem; border: .14rem solid color-mix(in srgb, var(--surface) 72%, transparent); border-radius: 50%; background: var(--accent); box-shadow: 0 .18rem .45rem color-mix(in srgb, var(--ink) 16%, transparent); -webkit-appearance: none; }
+	.volume-control { display: flex; align-items: center; justify-content: flex-end; gap: .65rem; }
+	.volume-control input { width: min(7.5rem, 10vw); }
 	button:disabled { cursor: default; opacity: .42; }
 	.player-notice { position: absolute; z-index: 5; right: 1rem; bottom: 8.2rem; max-width: min(24rem, calc(100% - 2rem)); margin: 0; padding: .65rem .85rem; border-radius: .75rem; background: var(--ink); color: var(--paper); font-size: .7rem; opacity: 0; pointer-events: none; transform: translateY(.5rem); transition: opacity .2s ease, transform .2s ease; }
 	.player-notice.visible { opacity: 1; transform: translateY(0); }
 	@keyframes state-level { to { height: 100%; } }
 	@media (max-width: 900px) {
-		.player-controls { grid-template-columns: minmax(10rem, .8fr) minmax(19rem, 1.4fr); }
+		.player-controls { grid-template-columns: minmax(11rem, .8fr) minmax(19rem, 1.4fr); }
 		.volume-control { display: none; }
 	}
 	@media (max-width: 760px) {
-		.music-player { height: calc(100svh - 5.6rem); min-height: 38rem; border-radius: 1.25rem; }
+		.music-player { height: calc(100svh - 5.6rem); min-height: 40rem; border-radius: 1.25rem; }
 		.player-surface { grid-template-rows: auto auto minmax(0, 1fr) auto; }
 		.player-heading { min-height: 4.8rem; padding: .9rem 1rem; }
 		.player-heading h1 { font-size: 1.3rem; }
@@ -247,7 +253,7 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 		.lyrics-pane { padding: 1rem; }
 		.lyrics-heading h2 { max-width: 62vw; }
 		.lyrics-scroll { padding-block: 3rem; }
-		.player-controls { min-height: 8.7rem; grid-template-columns: 1fr auto; gap: .65rem 1rem; padding: .75rem 1rem; }
+		.player-controls { min-height: 9.4rem; grid-template-columns: 1fr auto; gap: .8rem 1rem; padding: .9rem 1rem; }
 		.now-playing { min-width: 0; }
 		.control-center { display: contents; }
 		.transport-controls { grid-column: 2; grid-row: 1; }
@@ -263,9 +269,12 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 		.current-cover { width: 2.8rem; height: 2.8rem; }
 		.lyrics-heading h2 { font-size: 1.1rem; }
 		.player-controls { grid-template-columns: minmax(0, 1fr) auto; }
-		.now-cover { width: 2.8rem; height: 2.8rem; }
-		.icon-button { width: 2.1rem; height: 2.1rem; }
-		.play-button { width: 2.65rem; height: 2.65rem; }
+		.now-cover { width: 3rem; height: 3rem; border-radius: .85rem; }
+		.now-playing { gap: .7rem; }
+		.now-playing strong { font-size: .78rem; }
+		.now-playing span { font-size: .66rem; }
+		.icon-button { width: 2.35rem; height: 2.35rem; border-radius: .82rem; }
+		.play-button { width: 3rem; height: 3rem; border-radius: 1.05rem; }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.player-background-video { display: none; }
