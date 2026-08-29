@@ -135,8 +135,8 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 	.music-player {
 		position: relative;
 		overflow: hidden;
-		height: min(54rem, calc(100vh - 6.5rem));
-		min-height: 43rem;
+		height: min(64rem, calc(100svh - 8rem));
+		min-height: 46rem;
 		border-radius: var(--radius-card);
 		background: var(--surface-lilac);
 		box-shadow: var(--shadow-raised);
@@ -196,7 +196,7 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 	.state-equalizer i:nth-child(3) { height: 65%; animation-delay: -.25s; }
 	.state-equalizer i:nth-child(4) { height: 78%; animation-delay: -.65s; }
 	.music-player[data-state='error'] .state-equalizer i { animation-play-state: paused; }
-	.player-controls { position: relative; display: grid; overflow: hidden; min-height: 8.4rem; grid-template-columns: minmax(14rem, .95fr) minmax(24rem, 1.45fr) minmax(10rem, .7fr); align-items: center; gap: clamp(1.25rem, 2.5vw, 2.5rem); padding: 1.15rem 1.65rem; border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent); background: var(--surface); font-family: var(--font-body); isolation: isolate; }
+	.player-controls { position: relative; display: grid; overflow: hidden; min-height: 8rem; grid-template-columns: minmax(14rem, .95fr) minmax(24rem, 1.45fr) minmax(10rem, .7fr); align-items: center; gap: clamp(1.25rem, 2.5vw, 2.5rem); padding: 1rem 1.55rem; border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent); background: var(--surface); font-family: var(--font-body); isolation: isolate; }
 	.controls-backdrop, .controls-shade { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 	.controls-backdrop { z-index: -2; background: var(--surface-lilac) center 44% / cover no-repeat; filter: blur(18px) saturate(1.12); opacity: .88; transform: scale(1.1); transition: background-image .7s cubic-bezier(.22, 1, .36, 1); }
 	.controls-shade { z-index: -1; background: color-mix(in srgb, var(--surface) 68%, transparent); backdrop-filter: blur(14px); }

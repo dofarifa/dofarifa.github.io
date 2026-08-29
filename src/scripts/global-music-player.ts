@@ -18,20 +18,28 @@ const initMiniPlayer = () => {
 	const playIcon = root.querySelector<SVGElement>('[data-mini-play-icon]');
 	const pauseIcon = root.querySelector<SVGElement>('[data-mini-pause-icon]');
 	const progress = root.querySelector<HTMLElement>('[data-mini-progress]');
+	const playlistId = root.dataset.playlistId;
 
 	if (!cover || !backdrop || !title || !author || !previous || !play || !next || !playIcon || !pauseIcon || !progress) return;
 
 	root.dataset.initialized = 'true';
 	const controller = getMusicController();
 	let latestState = controller.getState();
+	let preloadRequested = false;
 
 	const updateVisibility = () => {
 		const onMusicPage = location.pathname === '/music' || location.pathname === '/music/';
-		const visible = Boolean(latestState.currentTrack) && !onMusicPage;
+		const visible = latestState.hasPlaybackSession && Boolean(latestState.currentTrack) && !onMusicPage;
 		root.dataset.visible = String(visible);
 		document.documentElement.dataset.musicCapsuleVisible = String(visible);
 		root.inert = !visible;
 		root.setAttribute('aria-hidden', String(!visible));
+	};
+
+	const preloadPlaylist = () => {
+		if (!playlistId || preloadRequested) return;
+		preloadRequested = true;
+		void controller.loadPlaylist(playlistId).catch(() => undefined);
 	};
 
 	const render = (state: MusicControllerState) => {
@@ -70,6 +78,8 @@ const initMiniPlayer = () => {
 		unsubscribe();
 		document.removeEventListener('pointerdown', collapseOnOutsidePointer);
 	}, { once: true });
+
+	window.setTimeout(preloadPlaylist, 0);
 };
 
 initMiniPlayer();

@@ -22,6 +22,7 @@ export interface MusicControllerState {
 	muted: boolean;
 	shuffleEnabled: boolean;
 	repeatSingle: boolean;
+	hasPlaybackSession: boolean;
 }
 
 type MusicSubscriber = (state: MusicControllerState, reason: MusicControllerReason) => void;
@@ -63,6 +64,7 @@ class MusicController {
 	private currentIndex = -1;
 	private shuffleEnabled = false;
 	private repeatSingle = false;
+	private playbackSessionStarted = false;
 	private loadingPromise: Promise<MusicTrack[]> | null = null;
 	private subscribers = new Set<MusicSubscriber>();
 
@@ -91,6 +93,7 @@ class MusicController {
 			muted: this.audio.muted,
 			shuffleEnabled: this.shuffleEnabled,
 			repeatSingle: this.repeatSingle,
+			hasPlaybackSession: this.playbackSessionStarted,
 		};
 	}
 
@@ -119,6 +122,7 @@ class MusicController {
 				this.tracks = tracks;
 				this.status = 'ready';
 				this.message = '';
+				this.warmPlaylistAssets(tracks);
 				if (this.currentIndex < 0 || this.currentIndex >= tracks.length) this.selectTrack(0, false);
 				else this.emit('playlist');
 				return tracks;
@@ -150,6 +154,8 @@ class MusicController {
 	}
 
 	async play() {
+		this.playbackSessionStarted = true;
+		this.emit('playback');
 		try {
 			await this.audio.play();
 		} catch {
@@ -159,7 +165,8 @@ class MusicController {
 	}
 
 	togglePlayback() {
-		if (this.audio.paused) void this.play();
+		if (this.audio.paused && !this.audio.src && this.tracks.length) this.selectTrack(Math.max(this.currentIndex, 0), true);
+		else if (this.audio.paused) void this.play();
 		else this.audio.pause();
 	}
 
@@ -249,7 +256,10 @@ class MusicController {
 		const timeout = window.setTimeout(() => controller.abort(), 30_000);
 
 		try {
-			const response = await fetch(endpoint, { signal: controller.signal, cache: 'no-store' });
+			const response = await fetch(endpoint, {
+				signal: controller.signal,
+				cache: forceRefresh ? 'reload' : 'force-cache',
+			});
 			if (!response.ok) throw new Error(`Playlist request failed: ${response.status}`);
 			const tracks = parseTracks(await response.json());
 			this.writeCache(playlistId, tracks);
@@ -257,6 +267,17 @@ class MusicController {
 		} finally {
 			window.clearTimeout(timeout);
 		}
+	}
+
+	private warmPlaylistAssets(tracks: MusicTrack[]) {
+		tracks.slice(0, 16).forEach((track, index) => {
+			if (track.pic) {
+				const image = new Image();
+				image.decoding = 'async';
+				image.src = track.pic;
+			}
+			if (index < 5 && track.lrc) void fetch(track.lrc, { cache: 'force-cache' }).catch(() => undefined);
+		});
 	}
 
 	private updateMediaSession(track: MusicTrack) {
