@@ -108,10 +108,9 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 </BaseLayout>
 
 <style>
-	.article-hero { position: relative; overflow: hidden; min-height: clamp(27rem, 54vh, 36rem); margin-top: -5rem; padding-top: 6.5rem; background: linear-gradient(135deg, #62ad82, #9dd6b8); isolation: isolate; }
-	.article-hero::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 4.8rem; background: var(--paper); clip-path: polygon(0 42%, 52% 72%, 100% 40%, 100% 100%, 0 100%); content: ""; }
+	.article-hero { position: relative; overflow: hidden; min-height: clamp(27rem, 54vh, 36rem); margin-top: -5rem; padding-top: 6.5rem; background: linear-gradient(100deg, #2c6b4d 0%, #4f9a70 33%, #76b894 68%, #a7d4bc 100%); isolation: isolate; }
 	.article-hero-bg { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .28; filter: saturate(.88) contrast(.96); }
-	.article-hero-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, color-mix(in srgb, #4f9b72 84%, transparent), color-mix(in srgb, #b7ddc7 72%, transparent)); }
+	.article-hero-shade { position: absolute; z-index: -2; inset: 0; background: radial-gradient(circle at 72% 48%, rgba(213, 237, 224, .24), transparent 34%), linear-gradient(90deg, rgba(40, 93, 67, .9) 0%, rgba(66, 127, 92, .82) 34%, rgba(100, 156, 120, .74) 68%, rgba(167, 210, 188, .7) 100%); }
 	.article-hero-inner { position: relative; z-index: 1; display: grid; align-content: center; min-height: clamp(20rem, 44vh, 28rem); color: white; }
 	.back-link { width: fit-content; margin-bottom: 1.15rem; color: color-mix(in srgb, white 82%, transparent); font-size: .8rem; font-weight: 700; text-decoration: none; }
 	.back-link:hover { color: white; }
@@ -145,8 +144,8 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-end { width: min(800px, calc(100% - 2rem)); margin: 2rem auto 0; padding: 2rem; border-radius: var(--radius-card); background: var(--surface-mint); text-align: center; }
 	.article-end p { margin: 0 0 .65rem; color: var(--muted); }
 	.article-end a { font-size: .85rem; font-weight: 700; text-decoration: none; }
-	:global([data-theme='dark']) .article-hero { background: linear-gradient(135deg, #2c664b, #5e8c77); }
-	:global([data-theme='dark']) .article-hero-shade { background: linear-gradient(90deg, rgba(37, 86, 62, .92), rgba(72, 98, 86, .8)); }
+	:global([data-theme='dark']) .article-hero { background: linear-gradient(100deg, #214f3b 0%, #327151 36%, #527d65 70%, #789982 100%); }
+	:global([data-theme='dark']) .article-hero-shade { background: radial-gradient(circle at 72% 48%, rgba(153, 189, 166, .16), transparent 34%), linear-gradient(90deg, rgba(27, 67, 49, .92) 0%, rgba(43, 88, 64, .86) 36%, rgba(69, 105, 82, .8) 70%, rgba(109, 135, 118, .74) 100%); }
 	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
 	:global([data-theme='dark']) .author-cover { background: var(--avatar-card-background); }
 	@media (max-width: 920px) {
@@ -155,7 +154,6 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	}
 	@media (max-width: 680px) {
 		.article-hero { min-height: 28rem; margin-top: -4.2rem; padding-top: 5.5rem; }
-		.article-hero::after { height: 3.6rem; }
 		.article-hero h1 { font-size: clamp(2.25rem, 11vw, 3.5rem); }
 		.article-layout { width: min(100% - 1rem, 1180px); margin-top: -.25rem; }
 		.article-main { padding: .75rem; border-radius: 1.15rem; }
