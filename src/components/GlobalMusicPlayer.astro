@@ -24,7 +24,7 @@ import { NETEASE_PLAYLIST_ID } from '../consts';
 		</button>
 		<button class="mini-play" type="button" data-mini-play aria-label="播放">
 			<svg data-mini-play-icon viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" /></svg>
-			<svg data-mini-pause-icon viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M8 5v14M16 5v14" /></svg>
+			<svg data-mini-pause-icon data-icon-hidden="true" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
 		</button>
 		<button type="button" data-mini-next aria-label="下一首" title="下一首">
 			<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 6l8 6-8 6V6Z" /></svg>
@@ -78,6 +78,7 @@ import { NETEASE_PLAYLIST_ID } from '../consts';
 	.mini-actions .mini-play { width: 2.75rem; height: 2.75rem; background: var(--accent); color: var(--accent-contrast); box-shadow: 0 .35rem 1rem color-mix(in srgb, var(--accent) 28%, transparent); }
 	.mini-actions .mini-play:hover { background: var(--accent-ink); color: var(--accent-contrast); }
 	.mini-actions svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+	.mini-actions svg[data-icon-hidden='true'] { display: none; }
 	.mini-actions [data-mini-play-icon] { fill: currentColor; stroke: none; transform: translateX(.05rem); }
 	.mini-progress { position: absolute; right: 1.05rem; bottom: .22rem; left: 1.05rem; height: .14rem; border-radius: 999px; background: linear-gradient(to right, var(--accent) var(--mini-progress, 0%), color-mix(in srgb, var(--muted) 24%, transparent) var(--mini-progress, 0%)); }
 	@media (max-width: 640px) {

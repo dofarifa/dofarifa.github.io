@@ -100,7 +100,7 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 					</button>
 					<button class="play-button" type="button" data-play-button disabled aria-label="播放">
 						<svg data-play-icon viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" /></svg>
-						<svg data-pause-icon viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M8 5v14M16 5v14" /></svg>
+						<svg data-pause-icon data-icon-hidden="true" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14" /></svg>
 					</button>
 					<button class="icon-button" type="button" data-next-button disabled aria-label="下一首" title="下一首">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 6l8 6-8 6V6Z" /></svg>
@@ -119,7 +119,7 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 			<div class="volume-control">
 				<button class="icon-button" type="button" data-mute-button disabled aria-label="静音" title="静音">
 					<svg data-volume-icon viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h4l5-4v14l-5-4H5V9Zm12 0a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12" /></svg>
-					<svg data-muted-icon viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M5 9h4l5-4v14l-5-4H5V9Zm12 1 4 4m0-4-4 4" /></svg>
+					<svg data-muted-icon data-icon-hidden="true" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9h4l5-4v14l-5-4H5V9Zm12 1 4 4m0-4-4 4" /></svg>
 				</button>
 				<input type="range" data-volume min="0" max="1" value="0.65" step="0.01" disabled aria-label="音量" />
 			</div>
@@ -216,6 +216,7 @@ const playlistUrl = `https://music.163.com/#/playlist?id=${NETEASE_PLAYLIST_ID}`
 	.play-button { width: 3.4rem; height: 3.4rem; border-color: transparent; border-radius: 1.2rem; background: var(--accent); color: var(--accent-contrast); box-shadow: 0 .55rem 1.25rem color-mix(in srgb, var(--accent) 28%, transparent); }
 	.play-button:hover:not(:disabled) { background: var(--accent-ink); transform: translateY(-1px) scale(1.025); box-shadow: 0 .7rem 1.5rem color-mix(in srgb, var(--accent) 34%, transparent); }
 	.play-button svg { width: 1.2rem; height: 1.2rem; }
+	.icon-button svg[data-icon-hidden='true'], .play-button svg[data-icon-hidden='true'] { display: none; }
 	.play-button [data-play-icon] { fill: currentColor; stroke: none; transform: translateX(.07rem); }
 	.repeat-one { position: absolute; right: .12rem; bottom: .12rem; display: grid; width: .8rem; height: .8rem; place-items: center; border-radius: 50%; background: var(--accent); color: var(--accent-contrast); font-size: .5rem; font-weight: 800; }
 	.timeline { display: grid; width: min(100%, 42rem); grid-template-columns: 2.8rem minmax(0, 1fr) 2.8rem; align-items: center; gap: .7rem; margin-inline: auto; }

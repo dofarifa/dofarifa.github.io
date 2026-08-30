@@ -271,8 +271,8 @@ const initMusicPlayer = (root: HTMLElement) => {
 			renderTrackList();
 		}
 
-		playIcon.toggleAttribute('hidden', state.playing);
-		pauseIcon.toggleAttribute('hidden', !state.playing);
+		playIcon.dataset.iconHidden = String(state.playing);
+		pauseIcon.dataset.iconHidden = String(!state.playing);
 		playButton.setAttribute('aria-label', state.playing ? '暂停' : '播放');
 		currentTime.textContent = formatTime(state.currentTime);
 		duration.textContent = formatTime(state.duration);
@@ -288,8 +288,8 @@ const initMusicPlayer = (root: HTMLElement) => {
 
 		volume.value = String(state.volume);
 		const isMuted = state.muted || state.volume === 0;
-		volumeIcon.toggleAttribute('hidden', isMuted);
-		mutedIcon.toggleAttribute('hidden', !isMuted);
+		volumeIcon.dataset.iconHidden = String(isMuted);
+		mutedIcon.dataset.iconHidden = String(!isMuted);
 		muteButton.setAttribute('aria-label', isMuted ? '取消静音' : '静音');
 
 		if (reason === 'status' && state.status === 'ready' && state.message) showNotice(state.message);

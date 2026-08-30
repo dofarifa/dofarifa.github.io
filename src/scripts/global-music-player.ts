@@ -52,8 +52,8 @@ const initMiniPlayer = () => {
 			setBackgroundImage(backdrop, track.pic);
 		}
 
-		playIcon.toggleAttribute('hidden', state.playing);
-		pauseIcon.toggleAttribute('hidden', !state.playing);
+		playIcon.dataset.iconHidden = String(state.playing);
+		pauseIcon.dataset.iconHidden = String(!state.playing);
 		play.setAttribute('aria-label', state.playing ? '暂停' : '播放');
 		const ratio = state.duration > 0 ? Math.min(100, (state.currentTime / state.duration) * 100) : 0;
 		progress.style.setProperty('--mini-progress', `${ratio}%`);
