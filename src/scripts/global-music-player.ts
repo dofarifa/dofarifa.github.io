@@ -71,9 +71,18 @@ const initMiniPlayer = () => {
 		if (!root.contains(event.target as Node)) root.dataset.expanded = 'false';
 	};
 	document.addEventListener('pointerdown', collapseOnOutsidePointer);
-	previous.addEventListener('click', () => controller.previous());
-	play.addEventListener('click', () => controller.togglePlayback());
-	next.addEventListener('click', () => controller.next());
+	const bindControl = (button: HTMLButtonElement, action: () => void) => {
+		button.addEventListener('click', (event) => {
+			event.preventDefault();
+			event.stopPropagation();
+			root.dataset.expanded = 'true';
+			action();
+		});
+	};
+
+	bindControl(previous, () => controller.previous());
+	bindControl(play, () => controller.togglePlayback());
+	bindControl(next, () => controller.next());
 	document.addEventListener('astro:before-swap', () => {
 		unsubscribe();
 		document.removeEventListener('pointerdown', collapseOnOutsidePointer);
