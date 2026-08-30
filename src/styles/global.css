@@ -25,6 +25,7 @@
 	--sun: #f4bda9;
 	--sun-shadow: rgba(176, 121, 103, .18);
 	--decor-shadow: rgba(71, 64, 112, .12);
+	--avatar-card-background: #fff url('/images/avatar-stars-light.svg') center 45% / cover no-repeat;
 	--radius-card: 1.5rem;
 	--radius-small: 1rem;
 	--font-body: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -56,6 +57,7 @@
 	--sun: #d58e75;
 	--sun-shadow: rgba(4, 3, 9, .28);
 	--decor-shadow: rgba(4, 3, 9, .3);
+	--avatar-card-background: #090912 url('/images/avatar-stars-dark.svg') center 45% / cover no-repeat;
 }
 
 *, *::before, *::after { box-sizing: border-box; }

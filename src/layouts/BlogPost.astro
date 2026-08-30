@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
-import { AVATAR_CARD_BACKGROUND, SITE_AVATAR, SITE_TITLE } from '../consts';
+import { SITE_AVATAR, SITE_TITLE } from '../consts';
 import BaseLayout from './BaseLayout.astro';
 
 interface Heading {
@@ -81,7 +81,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 
 				<aside class="article-sidebar" aria-label="文章侧边栏">
 					<section class="author-card">
-						<div class="author-cover" style={`--avatar-card-background: ${AVATAR_CARD_BACKGROUND};`} aria-hidden="true"></div>
+						<div class="author-cover" aria-hidden="true"></div>
 						<Image src={SITE_AVATAR} width={112} height={112} format="webp" quality={82} loading="lazy" alt={`${SITE_TITLE} 的头像`} />
 						<h2>{SITE_TITLE}</h2>
 						<p>记录技术、阅读与生活。</p>
