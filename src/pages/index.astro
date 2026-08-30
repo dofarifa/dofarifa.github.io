@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { HOME_BANNER_POSTER, HOME_BANNER_VIDEO, SITE_AVATAR, SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE } from '../consts';
+import { HOME_BANNER_POSTER, HOME_BANNER_VIDEO, HOME_TOPIC_TAGS, SITE_AVATAR, SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -11,6 +11,7 @@ const featuredPost = posts.find((post) => post.data.featured) ?? posts[0];
 const recentPosts = posts.filter((post) => post.id !== featuredPost?.id).slice(0, 4);
 const tagCounts = [...new Set(posts.flatMap((post) => post.data.tags))]
 	.map((tag) => ({ tag, count: posts.filter((post) => post.data.tags.includes(tag)).length }));
+const topicTags = HOME_TOPIC_TAGS.length ? HOME_TOPIC_TAGS : tagCounts.map(({ tag }) => tag).slice(0, 6);
 const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pubDate.getFullYear())) : new Date().getFullYear();
 ---
 
@@ -19,9 +20,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 		<section class="shell hero">
 			{HOME_BANNER_VIDEO && (
 				<div class="hero-media" aria-hidden="true">
-					<video class="hero-video" poster={HOME_BANNER_POSTER} autoplay muted loop playsinline preload="auto" data-hero-video>
-						<source src={HOME_BANNER_VIDEO} type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
-					</video>
+					<video class="hero-video" poster={HOME_BANNER_POSTER} muted loop playsinline preload="none" data-hero-video data-src={HOME_BANNER_VIDEO}></video>
 				</div>
 			)}
 			<h1 class="sr-only">{SITE_TAGLINE}</h1>
@@ -36,7 +35,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 		<nav class="shell topic-bar" aria-label="文章分类">
 			<a class="is-active" href="/blog">全部</a>
-			{tagCounts.slice(0, 6).map(({ tag }) => <a href={`/blog?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}
+			{topicTags.map((tag) => <a href={`/blog?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}
 			<a class="topic-more" href="/blog" aria-label="浏览全部分类">
 				<span>更多</span>
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
@@ -108,14 +107,24 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	<script>
 		const setupHeroVideo = () => {
 			const canPlayMotion = window.matchMedia('(min-width: 641px) and (prefers-reduced-motion: no-preference)').matches;
+			const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+			const prefersLightPayload = Boolean(connection?.saveData || /2g/.test(connection?.effectiveType ?? ''));
+			const requestIdle = (callback: () => void) => {
+				const idle = (window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+				if (idle) {
+					idle(callback, { timeout: 1400 });
+					return;
+				}
+
+				window.setTimeout(callback, 700);
+			};
 
 			document.querySelectorAll<HTMLVideoElement>('[data-hero-video]').forEach((video) => {
 				if (video.dataset.initialized === 'true') return;
 				video.dataset.initialized = 'true';
 
-				if (!canPlayMotion) {
+				if (!canPlayMotion || prefersLightPayload) {
 					video.pause();
-					video.removeAttribute('autoplay');
 					video.setAttribute('preload', 'none');
 					return;
 				}
@@ -124,36 +133,57 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 				video.loop = true;
 				video.playsInline = true;
 				video.defaultMuted = true;
-				video.autoplay = true;
+				video.preload = 'metadata';
+
+				const attachSource = () => {
+					if (video.dataset.sourceAttached === 'true') return;
+					const source = video.dataset.src;
+					if (!source) return;
+
+					video.dataset.sourceAttached = 'true';
+					video.src = source;
+					video.load();
+				};
 
 				const playVideo = () => {
-					if (!document.hidden) void video.play().catch(() => undefined);
+					if (document.hidden) return;
+					attachSource();
+					void video.play().catch(() => undefined);
+				};
+
+				const schedulePlayback = () => requestIdle(playVideo);
+				const handleVisibilityChange = () => {
+					if (document.hidden) {
+						video.pause();
+						return;
+					}
+
+					schedulePlayback();
 				};
 
 				video.addEventListener('ended', () => {
 					video.currentTime = 0;
 					playVideo();
 				});
-				video.addEventListener('canplay', playVideo, { once: true });
-				document.addEventListener('visibilitychange', playVideo);
+				document.addEventListener('visibilitychange', handleVisibilityChange);
 				const observer = 'IntersectionObserver' in window
 					? new IntersectionObserver(([entry]) => {
 							if (entry?.isIntersecting) {
-								playVideo();
+								schedulePlayback();
 								return;
 							}
 
 							video.pause();
-						}, { rootMargin: '180px 0px' })
+						}, { rootMargin: '80px 0px' })
 					: null;
 
 				observer?.observe(video);
 				document.addEventListener('astro:before-swap', () => {
-					document.removeEventListener('visibilitychange', playVideo);
+					document.removeEventListener('visibilitychange', handleVisibilityChange);
 					observer?.disconnect();
 				}, { once: true });
 
-				if (!observer) playVideo();
+				if (!observer) schedulePlayback();
 			});
 		};
 
@@ -164,7 +194,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 <style>
 	.hero { position: relative; display: flex; overflow: hidden; min-height: clamp(31rem, 42vw, 43rem); align-items: flex-end; margin-top: 1rem; padding: clamp(1.5rem, 3.5vw, 3rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2rem; background: linear-gradient(135deg, #211d34, #3a3154 52%, #151723); box-shadow: 0 1.5rem 4.5rem color-mix(in srgb, var(--decor-shadow) 58%, transparent); isolation: isolate; contain: paint; }
-	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: radial-gradient(circle at 26% 22%, rgba(159, 140, 255, .34), transparent 34%), linear-gradient(135deg, #211d34, #3a3154 52%, #151723); }
+	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: radial-gradient(circle at 26% 22%, rgba(159, 140, 255, .34), transparent 34%), linear-gradient(135deg, #211d34, #3a3154 52%, #151723); contain: paint; }
 	.hero-video { --hero-edge-crop: clamp(.5rem, .85vw, .95rem); position: absolute; top: 0; bottom: 0; left: calc(-1 * var(--hero-edge-crop)); width: calc(100% + var(--hero-edge-crop)); height: 100%; object-fit: cover; object-position: center center; backface-visibility: hidden; }
 	.hero::after { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, transparent 18%, rgba(20, 18, 32, .18) 62%, rgba(20, 18, 32, .42)); content: ""; pointer-events: none; }
 	.hero-actions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: .8rem; }
