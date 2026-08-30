@@ -18,7 +18,9 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	<main>
 		<section class="shell hero">
 			{HOME_BANNER_VIDEO && (
-				<video class="hero-video" src={HOME_BANNER_VIDEO} autoplay muted loop playsinline preload="auto" data-hero-video aria-hidden="true"></video>
+				<div class="hero-media" aria-hidden="true">
+					<video class="hero-video" data-src={HOME_BANNER_VIDEO} muted loop playsinline preload="none" data-hero-video></video>
+				</div>
 			)}
 			<h1 class="sr-only">{SITE_TAGLINE}</h1>
 			<div class="hero-actions">
@@ -111,19 +113,68 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 				video.playsInline = true;
 				video.defaultMuted = true;
 				video.autoplay = true;
+				video.preload = 'none';
+
+				const media = video.closest<HTMLElement>('.hero-media');
+				const connection = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
+				const shouldKeepStatic = connection?.saveData || ['slow-2g', '2g'].includes(connection?.effectiveType ?? '');
 
 				const playVideo = () => {
-					if (!document.hidden) void video.play().catch(() => undefined);
+					if (!document.hidden && video.src) void video.play().catch(() => undefined);
+				};
+
+				const loadVideo = () => {
+					if (!video.src && video.dataset.src) {
+						video.src = video.dataset.src;
+						video.preload = 'metadata';
+						video.load();
+					}
+					playVideo();
+				};
+
+				const scheduleLoad = () => {
+					if (shouldKeepStatic) {
+						media?.classList.add('is-static');
+						return;
+					}
+
+					if ('requestIdleCallback' in window) {
+						window.requestIdleCallback(loadVideo, { timeout: 1200 });
+						return;
+					}
+
+					window.setTimeout(loadVideo, 350);
 				};
 
 				video.addEventListener('ended', () => {
 					video.currentTime = 0;
 					playVideo();
 				});
-				video.addEventListener('canplay', playVideo, { once: true });
+				video.addEventListener('canplay', () => {
+					media?.classList.add('is-ready');
+					playVideo();
+				}, { once: true });
+				video.addEventListener('loadeddata', () => media?.classList.add('is-ready'), { once: true });
 				document.addEventListener('visibilitychange', playVideo);
-				document.addEventListener('astro:before-swap', () => document.removeEventListener('visibilitychange', playVideo), { once: true });
-				playVideo();
+				const observer = 'IntersectionObserver' in window
+					? new IntersectionObserver(([entry]) => {
+							if (entry?.isIntersecting) {
+								scheduleLoad();
+								playVideo();
+								return;
+							}
+
+							video.pause();
+						}, { rootMargin: '180px 0px' })
+					: null;
+
+				observer?.observe(video);
+				document.addEventListener('astro:before-swap', () => {
+					document.removeEventListener('visibilitychange', playVideo);
+					observer?.disconnect();
+				}, { once: true });
+
+				if (!observer) scheduleLoad();
 			});
 		};
 
@@ -133,8 +184,12 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 </BaseLayout>
 
 <style>
-	.hero { position: relative; display: flex; overflow: hidden; min-height: clamp(27rem, 48vw, 38rem); align-items: flex-end; margin-top: 1rem; padding: clamp(1.5rem, 3.5vw, 3rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2rem; background: var(--surface-lilac); box-shadow: 0 1.5rem 4.5rem color-mix(in srgb, var(--decor-shadow) 58%, transparent); isolation: isolate; }
-	.hero-video { position: absolute; z-index: -3; inset: -7%; width: 114%; height: 114%; object-fit: cover; object-position: center; filter: saturate(1.02) contrast(.98) brightness(.94); }
+	.hero { position: relative; display: flex; overflow: hidden; min-height: clamp(27rem, 48vw, 38rem); align-items: flex-end; margin-top: 1rem; padding: clamp(1.5rem, 3.5vw, 3rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2rem; background: linear-gradient(135deg, #211d34, #3a3154 52%, #151723); box-shadow: 0 1.5rem 4.5rem color-mix(in srgb, var(--decor-shadow) 58%, transparent); isolation: isolate; contain: paint; }
+	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: radial-gradient(circle at 26% 22%, rgba(159, 140, 255, .34), transparent 34%), linear-gradient(135deg, #211d34, #3a3154 52%, #151723); }
+	.hero-media::before { position: absolute; inset: 0; background: linear-gradient(110deg, transparent 26%, rgba(255, 255, 255, .1) 42%, transparent 58%); content: ""; opacity: .32; transform: translateX(-100%); animation: hero-loading-sheen 1.8s ease-in-out infinite; pointer-events: none; }
+	.hero-media.is-ready::before, .hero-media.is-static::before { opacity: 0; animation: none; }
+	.hero-video { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; min-width: 100%; min-height: 100%; object-fit: cover; object-position: center; opacity: 0; filter: saturate(1.02) contrast(.98) brightness(.94); transform: translate(-50%, -50%) scale(1.22); transition: opacity .5s ease; }
+	.hero-media.is-ready .hero-video { opacity: 1; }
 	.hero::after { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, transparent 18%, rgba(20, 18, 32, .18) 62%, rgba(20, 18, 32, .42)); content: ""; pointer-events: none; }
 	.hero-actions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: .8rem; }
 	.hero-actions svg, .text-link svg, .topic-more svg { width: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
@@ -199,6 +254,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	}
 	@media (max-width: 800px) {
 		.hero { min-height: 25rem; padding: 1.5rem; }
+		.hero-video { transform: translate(-50%, -50%) scale(1.34); }
 		.featured-card { grid-template-columns: 1fr; }
 		.featured-card :global(img) { min-height: 14rem; max-height: 22rem; }
 		.sidebar { grid-template-columns: 1fr; }
@@ -209,6 +265,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 	}
 	@media (max-width: 520px) {
 		.hero { min-height: 22rem; margin-top: .75rem; padding: 1rem; border-radius: var(--radius-card); }
+		.hero-video { transform: translate(-50%, -50%) scale(1.48); }
 		.hero-actions { width: 100%; }
 		.hero-actions .button { flex: 1; min-width: 0; }
 		.heading-row { align-items: flex-start; }
@@ -216,6 +273,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 		.featured-copy { padding: 1.5rem; }
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.hero-video { display: none; }
+		.hero-video, .hero-media::before { display: none; }
 	}
+	@keyframes hero-loading-sheen { to { transform: translateX(100%); } }
 </style>
