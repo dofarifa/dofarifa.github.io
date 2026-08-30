@@ -10,7 +10,8 @@ export const NETEASE_PLAYLIST_ID = '3058435980';
 export const MUSIC_BACKGROUND_IMAGE = '';
 export const MUSIC_BACKGROUND_VIDEO = '';
 // 首页顶部 Banner 支持 public 目录路径或完整 URL。留空时使用内置轻量动画背景。
-export const HOME_BANNER_VIDEO = '/media/home-banner.webm';
+export const HOME_BANNER_VIDEO = '/media/home-banner-optimized.mp4';
+export const HOME_BANNER_POSTER = '/media/home-banner-poster.jpg';
 // 头像卡片上半部分背景。支持完整 CSS background 值，例如渐变或 url('/images/avatar-bg.jpg') center / cover no-repeat。
 export const AVATAR_CARD_BACKGROUND = 'linear-gradient(135deg, #f1efff 0%, #f4f6ff 48%, #eaf7ff 100%)';
 
