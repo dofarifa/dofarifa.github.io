@@ -98,7 +98,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		padding-block: .55rem;
 		color: var(--header-ink, var(--ink));
 	}
-	.site-header::before { position: absolute; z-index: -1; inset: 0 0 -2.25rem; background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 88%, transparent) 0%, color-mix(in srgb, var(--paper) 62%, transparent) 56%, transparent 100%); content: ""; pointer-events: none; backdrop-filter: blur(14px) saturate(1.08); }
+	.site-header::before { position: absolute; z-index: -1; inset: 0; background: color-mix(in srgb, var(--paper) 78%, transparent); content: ""; pointer-events: none; backdrop-filter: blur(12px) saturate(1.06); }
 	.nav {
 		display: grid;
 		min-height: 3.75rem;
