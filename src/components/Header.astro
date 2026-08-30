@@ -94,41 +94,42 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 	.site-header {
 		position: sticky;
 		top: 0;
-		z-index: 20;
-		padding-top: .65rem;
+		z-index: 30;
+		padding-block: .55rem;
+		color: var(--header-ink, var(--ink));
 	}
-	.site-header::before { position: absolute; z-index: -1; inset: 0 0 -2.5rem; background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 96%, transparent) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 68%, transparent 100%); content: ""; pointer-events: none; }
+	.site-header::before { position: absolute; z-index: -1; inset: 0 0 -2.25rem; background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 88%, transparent) 0%, color-mix(in srgb, var(--paper) 62%, transparent) 56%, transparent 100%); content: ""; pointer-events: none; backdrop-filter: blur(14px) saturate(1.08); }
 	.nav {
 		display: grid;
-		min-height: 4.15rem;
+		min-height: 3.75rem;
 		grid-template-columns: 1fr auto 1fr;
 		align-items: center;
-		gap: 1.25rem;
-		padding-inline: .8rem;
-		border: 1px solid var(--line);
-		border-radius: var(--radius-card);
-		background: color-mix(in srgb, var(--surface) 94%, transparent);
-		box-shadow: 0 8px 28px color-mix(in srgb, var(--decor-shadow) 42%, transparent);
+		gap: clamp(.9rem, 2.4vw, 2rem);
+		padding-inline: clamp(.25rem, 1.2vw, .8rem);
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		box-shadow: none;
 	}
-	.brand { display: inline-flex; width: fit-content; align-items: center; gap: .65rem; color: var(--ink); font-family: var(--font-display); font-size: 1.06rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; text-decoration: none; }
-	.brand-mark { display: grid; overflow: hidden; width: 2.15rem; height: 2.15rem; place-items: center; border-radius: .75rem; background: var(--accent-soft); }
+	.brand { display: inline-flex; width: fit-content; align-items: center; gap: .7rem; color: var(--header-brand-color, var(--ink)); font-family: var(--font-display); font-size: 1.06rem; font-weight: 820; letter-spacing: -.01em; line-height: 1; text-decoration: none; }
+	.brand-mark { display: grid; overflow: hidden; width: 2.05rem; height: 2.05rem; place-items: center; border-radius: .7rem; background: var(--header-mark-bg, color-mix(in srgb, var(--accent-soft) 72%, transparent)); box-shadow: var(--header-mark-shadow, none); }
 	.brand-mark img { width: 100%; height: 100%; object-fit: cover; }
-	.nav-links { display: flex; align-items: center; gap: .15rem; }
-	.header-tools { display: flex; align-items: center; justify-content: flex-end; gap: .08rem; }
+	.nav-links { display: flex; align-items: center; gap: clamp(.65rem, 2vw, 1.45rem); }
+	.header-tools { display: flex; align-items: center; justify-content: flex-end; gap: .22rem; }
 	.tool-button, .mobile-menu summary {
 		display: grid;
-		width: 2.4rem;
-		height: 2.4rem;
+		width: 2.25rem;
+		height: 2.25rem;
 		padding: 0;
 		border: 0;
 		place-items: center;
 		border-radius: 50%;
 		background: transparent;
-		color: var(--muted);
+		color: var(--header-tool-color, var(--muted));
 		cursor: pointer;
 		transition: background-color .2s ease, color .2s ease, transform .2s ease;
 	}
-	.tool-button:hover, .mobile-menu summary:hover { background: var(--accent-soft); color: var(--accent-ink); transform: translateY(-1px); }
+	.tool-button:hover, .mobile-menu summary:hover { background: var(--header-tool-hover-bg, color-mix(in srgb, var(--accent-soft) 68%, transparent)); color: var(--header-tool-hover-color, var(--accent-ink)); transform: translateY(-1px); }
 	.tool-button svg, .mobile-menu summary svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 	.random-button svg circle { fill: currentColor; stroke: none; }
 	.rss-link svg { fill: currentColor; stroke: none; }
@@ -144,7 +145,7 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		.mobile-menu { display: block; }
 	}
 	@media (max-width: 520px) {
-		.site-header { padding-top: .45rem; }
+		.site-header { padding-block: .45rem; }
 		.nav { min-height: 3.75rem; gap: .35rem; padding-inline: .55rem; }
 		.header-tools { gap: 0; }
 		.header-tools > .tool-button, .header-tools > :global(.theme-toggle), .mobile-menu summary { width: 2.25rem; height: 2.25rem; }

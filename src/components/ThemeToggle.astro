@@ -97,14 +97,14 @@
 		place-items: center;
 		border-radius: 50%;
 		background: transparent;
-		color: var(--muted);
+		color: var(--header-tool-color, var(--muted));
 		cursor: pointer;
 		transition: background-color .2s ease, color .2s ease, transform .2s ease;
 	}
 
 	.theme-toggle:hover {
-		background: var(--accent-soft);
-		color: var(--accent-ink);
+		background: var(--header-tool-hover-bg, var(--accent-soft));
+		color: var(--header-tool-hover-color, var(--accent-ink));
 		transform: rotate(-8deg);
 	}
 

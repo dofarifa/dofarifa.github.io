@@ -34,10 +34,11 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 <BaseLayout title={title} description={description} image={heroImage}>
 	<main>
 		<article>
-			<header class="shell article-hero">
+			<header class="article-hero">
 				{heroImage && <Image class="article-hero-bg" width={1800} height={920} src={heroImage} alt="" loading="eager" fetchpriority="high" />}
 				<div class="article-hero-shade" aria-hidden="true"></div>
-				<div class="article-hero-inner">
+				<div class="article-stars" aria-hidden="true"></div>
+				<div class="shell article-hero-inner">
 					<a class="back-link" href="/blog">返回文章</a>
 					<div class="article-tags" aria-label="文章标签">
 						{tags.map((tag) => <a href={`/blog?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}
@@ -108,11 +109,14 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 </BaseLayout>
 
 <style>
-	.article-hero { --article-hero-radius: 2rem; position: relative; overflow: hidden; min-height: clamp(25rem, 48vh, 34rem); margin-top: 1rem; padding: clamp(3.5rem, 6vw, 5rem); border: 0; border-radius: var(--article-hero-radius); background: linear-gradient(100deg, #2c6b4d 0%, #4f9a70 33%, #76b894 68%, #a7d4bc 100%); box-shadow: 0 1.4rem 4.2rem color-mix(in srgb, var(--decor-shadow) 46%, transparent), inset 0 0 0 1px color-mix(in srgb, white 18%, transparent); clip-path: inset(0 round var(--article-hero-radius)); isolation: isolate; transform: translateZ(0); }
-	.article-hero::after { position: absolute; z-index: 0; inset: 0; border-radius: inherit; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), inset 0 0 0 1px rgba(255, 255, 255, .08), inset 0 -2.5rem 4rem rgba(14, 48, 33, .08); content: ""; pointer-events: none; }
-	.article-hero-bg { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; opacity: .28; filter: saturate(.88) contrast(.96); transform: translateZ(0); }
-	.article-hero-shade { position: absolute; z-index: -2; inset: 0; border-radius: inherit; background: radial-gradient(circle at 72% 48%, rgba(213, 237, 224, .24), transparent 34%), linear-gradient(90deg, rgba(40, 93, 67, .9) 0%, rgba(66, 127, 92, .82) 34%, rgba(100, 156, 120, .74) 68%, rgba(167, 210, 188, .7) 100%); }
-	.article-hero-inner { position: relative; z-index: 1; display: grid; align-content: center; min-height: clamp(17rem, 36vh, 24rem); color: white; }
+	:global(body .site-header) { --header-brand-color: rgba(245, 248, 247, .9); --header-link-color: rgba(245, 248, 247, .72); --header-link-hover-color: #fff; --header-link-hover-bg: rgba(255, 255, 255, .09); --header-link-active-color: #fff; --header-link-active-bg: transparent; --header-link-indicator: rgba(179, 244, 205, .86); --header-link-indicator-opacity: 1; --header-tool-color: rgba(245, 248, 247, .72); --header-tool-hover-color: #fff; --header-tool-hover-bg: rgba(255, 255, 255, .1); --header-mark-bg: rgba(255, 255, 255, .08); --header-mark-shadow: 0 .7rem 1.8rem rgba(0, 0, 0, .18); position: absolute !important; top: 0; right: 0; left: 0; padding-top: .9rem; }
+	:global(body .site-header::before) { background: transparent !important; backdrop-filter: none !important; }
+	.article-hero { position: relative; overflow: hidden; min-height: clamp(29rem, 56vh, 39rem); margin-top: 0; padding-top: 9.4rem; background: #132427; isolation: isolate; }
+	.article-hero::after { position: absolute; z-index: 0; right: 0; bottom: -1px; left: 0; height: clamp(3rem, 6vw, 5rem); background: var(--paper); clip-path: polygon(0 58%, 50% 86%, 100% 58%, 100% 100%, 0 100%); content: ""; pointer-events: none; }
+	.article-hero-bg { position: absolute; z-index: -4; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .12; filter: saturate(.72) contrast(.9); transform: translateZ(0); }
+	.article-hero-shade { position: absolute; z-index: -3; inset: 0; background: radial-gradient(circle at 78% 22%, rgba(86, 126, 169, .48), transparent 28rem), radial-gradient(circle at 58% 52%, rgba(164, 175, 164, .32), transparent 30rem), linear-gradient(96deg, rgba(31, 61, 55, .96) 0%, rgba(40, 64, 62, .92) 44%, rgba(35, 56, 74, .9) 100%); }
+	.article-stars { position: absolute; z-index: -2; inset: 0; opacity: .46; background-image: radial-gradient(circle, rgba(245, 237, 151, .62) 0 1px, transparent 1.7px), radial-gradient(circle, rgba(218, 230, 255, .55) 0 1px, transparent 1.8px), radial-gradient(circle, rgba(255, 255, 255, .38) 0 1px, transparent 1.6px); background-position: 2rem 1.6rem, 7rem 4.4rem, 13rem 2.8rem; background-size: 7.2rem 6.4rem, 10rem 8rem, 13rem 9rem; mask-image: linear-gradient(180deg, transparent 0%, #000 16%, #000 82%, transparent 100%); pointer-events: none; }
+	.article-hero-inner { position: relative; z-index: 1; display: grid; align-content: center; min-height: clamp(19rem, 39vh, 27rem); color: white; }
 	.back-link { width: fit-content; margin-bottom: 1.15rem; color: color-mix(in srgb, white 82%, transparent); font-size: .8rem; font-weight: 700; text-decoration: none; }
 	.back-link:hover { color: white; }
 	.article-tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1.1rem; }
@@ -122,7 +126,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-meta { display: flex; flex-wrap: wrap; gap: .95rem; margin-top: 1.25rem; color: color-mix(in srgb, white 78%, transparent); font-size: .78rem; font-weight: 650; }
 	.article-meta span { display: inline-flex; align-items: center; gap: .35rem; }
 	.article-meta svg { width: .9rem; height: .9rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9; }
-	.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; align-items: start; gap: 1rem; margin-top: 1rem; }
+	.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; align-items: start; gap: 1rem; margin-top: 1.25rem; }
 	.article-main { min-width: 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: var(--radius-card); background: color-mix(in srgb, var(--surface) 92%, transparent); box-shadow: var(--shadow); }
 	.article-summary { padding: 1.05rem 1.2rem; border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--line)); border-radius: 1rem; background: color-mix(in srgb, var(--surface-lilac) 46%, var(--surface)); }
 	.article-summary div { display: inline-flex; align-items: center; gap: .42rem; color: var(--accent-ink); font-size: .82rem; font-weight: 800; }
@@ -145,9 +149,6 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-end { width: min(800px, calc(100% - 2rem)); margin: 2rem auto 0; padding: 2rem; border-radius: var(--radius-card); background: var(--surface-mint); text-align: center; }
 	.article-end p { margin: 0 0 .65rem; color: var(--muted); }
 	.article-end a { font-size: .85rem; font-weight: 700; text-decoration: none; }
-	:global([data-theme='dark']) .article-hero { background: linear-gradient(100deg, #214f3b 0%, #327151 36%, #527d65 70%, #789982 100%); }
-	:global([data-theme='dark']) .article-hero::after { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 0 0 1px rgba(255, 255, 255, .1), inset 0 -2.5rem 4rem rgba(7, 19, 14, .1); }
-	:global([data-theme='dark']) .article-hero-shade { background: radial-gradient(circle at 72% 48%, rgba(153, 189, 166, .16), transparent 34%), linear-gradient(90deg, rgba(27, 67, 49, .92) 0%, rgba(43, 88, 64, .86) 36%, rgba(69, 105, 82, .8) 70%, rgba(109, 135, 118, .74) 100%); }
 	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
 	:global([data-theme='dark']) .author-cover { background: var(--avatar-card-background); }
 	@media (max-width: 920px) {
@@ -155,9 +156,10 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 		.article-sidebar { position: static; grid-template-columns: 1fr 1fr; }
 	}
 	@media (max-width: 680px) {
-		.article-hero { --article-hero-radius: var(--radius-card); min-height: 25rem; margin-top: .75rem; padding: 2rem 1.3rem; }
+		.article-hero { min-height: 27rem; margin-top: 0; padding-top: 8.1rem; }
+		.article-hero::after { height: 3rem; clip-path: polygon(0 68%, 52% 86%, 100% 68%, 100% 100%, 0 100%); }
 		.article-hero h1 { font-size: clamp(2.25rem, 11vw, 3.5rem); }
-		.article-layout { width: min(100% - 1rem, 1180px); margin-top: .75rem; }
+		.article-layout { width: min(100% - 1rem, 1180px); margin-top: .85rem; }
 		.article-main { padding: .75rem; border-radius: 1.15rem; }
 		.article-body { padding: 1.6rem .4rem; }
 		.article-sidebar { grid-template-columns: 1fr; }

@@ -14,24 +14,44 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 </a>
 <style>
 	a {
+		position: relative;
 		display: inline-flex;
 		min-height: 2.5rem;
 		align-items: center;
-		padding: .7rem .8rem;
+		padding: .7rem .72rem;
 		border-radius: 999px;
-		color: var(--muted);
-		font-size: .92rem;
-		font-weight: 600;
+		color: var(--header-link-color, var(--muted));
+		font-size: .94rem;
+		font-weight: 760;
+		letter-spacing: .03em;
 		line-height: 1;
 		text-decoration: none;
-		transition: .2s ease;
+		transition: background-color .2s ease, color .2s ease, transform .2s ease;
+	}
+	a::after {
+		position: absolute;
+		right: .86rem;
+		bottom: .42rem;
+		left: .86rem;
+		height: 2px;
+		border-radius: 999px;
+		background: var(--header-link-indicator, var(--accent));
+		content: "";
+		opacity: 0;
+		transform: scaleX(.35);
+		transition: opacity .2s ease, transform .2s ease;
 	}
 	a:hover {
-		background: var(--surface-blue);
-		color: var(--ink);
+		background: var(--header-link-hover-bg, color-mix(in srgb, var(--accent-soft) 62%, transparent));
+		color: var(--header-link-hover-color, var(--ink));
+		transform: translateY(-1px);
 	}
 	a.active {
-		background: var(--accent-soft);
-		color: var(--accent-ink);
+		background: var(--header-link-active-bg, color-mix(in srgb, var(--accent-soft) 72%, transparent));
+		color: var(--header-link-active-color, var(--accent-ink));
+	}
+	a.active::after {
+		opacity: var(--header-link-indicator-opacity, .85);
+		transform: scaleX(1);
 	}
 </style>
