@@ -3,7 +3,7 @@ title: '三百年前的故事'
 description: '写给一个遥远却仍会回响的瞬间：时间走得很慢，故事却从未真正离开。'
 pubDate: '2026-08-30'
 heroImage: '../../assets/blog-placeholder-1.jpg'
-tags: ['随笔', '故事']
+tags: ['分享', '故事']
 featured: true
 ---
 
