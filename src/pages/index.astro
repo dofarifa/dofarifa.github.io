@@ -16,11 +16,17 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 ---
 
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+	{HOME_BANNER_POSTER && (
+		<Fragment slot="head">
+			<link rel="preload" as="image" href={HOME_BANNER_POSTER} fetchpriority="high" />
+		</Fragment>
+	)}
 	<main>
 		<section class="shell hero">
-			{HOME_BANNER_VIDEO && (
-				<div class="hero-media" aria-hidden="true">
-					<video class="hero-video" poster={HOME_BANNER_POSTER} muted loop playsinline preload="none" data-hero-video data-src={HOME_BANNER_VIDEO}></video>
+			{(HOME_BANNER_VIDEO || HOME_BANNER_POSTER) && (
+				<div class="hero-media" style={HOME_BANNER_POSTER ? `--hero-poster: url('${HOME_BANNER_POSTER}')` : undefined} aria-hidden="true" data-hero-media>
+					{HOME_BANNER_POSTER && <img class="hero-poster" src={HOME_BANNER_POSTER} alt="" decoding="async" fetchpriority="high" />}
+					{HOME_BANNER_VIDEO && <video class="hero-video" poster={HOME_BANNER_POSTER} muted loop playsinline preload="none" data-hero-video data-src={HOME_BANNER_VIDEO}></video>}
 				</div>
 			)}
 			<h1 class="sr-only">{SITE_TAGLINE}</h1>
@@ -122,6 +128,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 			document.querySelectorAll<HTMLVideoElement>('[data-hero-video]').forEach((video) => {
 				if (video.dataset.initialized === 'true') return;
 				video.dataset.initialized = 'true';
+				const media = video.closest<HTMLElement>('[data-hero-media]');
 
 				if (!canPlayMotion || prefersLightPayload) {
 					video.pause();
@@ -165,6 +172,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 					video.currentTime = 0;
 					playVideo();
 				});
+				video.addEventListener('playing', () => media?.classList.add('is-video-ready'), { once: true });
 				document.addEventListener('visibilitychange', handleVisibilityChange);
 				const observer = 'IntersectionObserver' in window
 					? new IntersectionObserver(([entry]) => {
@@ -194,8 +202,11 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 <style>
 	.hero { position: relative; display: flex; overflow: hidden; min-height: clamp(31rem, 42vw, 43rem); align-items: flex-end; margin-top: 1rem; padding: clamp(1.5rem, 3.5vw, 3rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2rem; background: linear-gradient(135deg, #211d34, #3a3154 52%, #151723); box-shadow: 0 1.5rem 4.5rem color-mix(in srgb, var(--decor-shadow) 58%, transparent); isolation: isolate; contain: paint; }
-	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: radial-gradient(circle at 26% 22%, rgba(159, 140, 255, .34), transparent 34%), linear-gradient(135deg, #211d34, #3a3154 52%, #151723); contain: paint; }
-	.hero-video { --hero-edge-crop: clamp(.5rem, .85vw, .95rem); position: absolute; top: 0; bottom: 0; left: calc(-1 * var(--hero-edge-crop)); width: calc(100% + var(--hero-edge-crop)); height: 100%; object-fit: cover; object-position: center center; backface-visibility: hidden; }
+	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: #14121f var(--hero-poster, none) center center / cover no-repeat; contain: paint; transform: translateZ(0); }
+	.hero-poster, .hero-video { --hero-edge-crop: clamp(.5rem, .85vw, .95rem); position: absolute; top: 0; bottom: 0; left: calc(-1 * var(--hero-edge-crop)); width: calc(100% + var(--hero-edge-crop)); height: 100%; object-fit: cover; object-position: center center; backface-visibility: hidden; }
+	.hero-poster { display: block; filter: saturate(1.02) contrast(1.02); }
+	.hero-video { opacity: 0; transition: opacity .45s ease; }
+	.hero-media.is-video-ready .hero-video { opacity: 1; }
 	.hero::after { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, transparent 18%, rgba(20, 18, 32, .18) 62%, rgba(20, 18, 32, .42)); content: ""; pointer-events: none; }
 	.hero-actions { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: .8rem; }
 	.hero-actions svg, .text-link svg, .topic-more svg { width: 1rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }

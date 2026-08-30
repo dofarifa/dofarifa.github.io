@@ -20,6 +20,7 @@ const { title, description, image, designContract } = Astro.props;
 <html lang="zh-CN">
 	<head>
 		<BaseHead title={title} description={description} image={image} />
+		<slot name="head" />
 	</head>
 	<body>
 		{designContract && <Fragment set:html={designContract} />}
