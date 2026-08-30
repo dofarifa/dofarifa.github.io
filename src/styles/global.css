@@ -82,7 +82,7 @@ button, input, textarea, select { font: inherit; }
 * { scrollbar-color: var(--scroll-thumb) var(--paper); scrollbar-width: thin; }
 *:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, white); outline-offset: 3px; }
 
-.shell { width: min(1180px, calc(100% - 3rem)); margin-inline: auto; }
+.shell { width: min(1520px, calc(100% - clamp(2rem, 4.5vw, 4rem))); margin-inline: auto; }
 .button { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; gap: .55rem; padding: .78rem 1.25rem .74rem; border: 1px solid var(--ink); border-radius: 999px; font-family: var(--font-body); font-size: .9rem; font-weight: 700; line-height: 1; text-align: center; text-decoration: none; transition: .2s ease; }
 .button-primary { border-color: var(--accent); background: var(--accent); color: var(--accent-contrast); }
 .button-primary:hover { border-color: var(--accent-ink); background: var(--accent-ink); }
