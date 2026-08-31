@@ -91,11 +91,14 @@ const hasTwikoo = COMMENTS_ENABLED && Boolean(TWIKOO_ENV_ID);
 			region?: string;
 			path?: string;
 			lang?: string;
-		}) => void;
+		}) => Promise<void> | void;
 	};
 
 	const TWIKOO_SCRIPT_ID = 'twikoo-client-script';
-	const TWIKOO_SCRIPT_SRC = 'https://s4.zstatic.net/npm/twikoo@1.7.20/dist/twikoo.min.js';
+	const TWIKOO_SCRIPT_SOURCES = [
+		'https://cdn.jsdelivr.net/npm/twikoo@1.7.20/dist/twikoo.all.min.js',
+		'https://unpkg.com/twikoo@1.7.20/dist/twikoo.all.min.js',
+	];
 
 	const getTwikooClient = () => (window as Window & { twikoo?: TwikooClient }).twikoo;
 
@@ -108,19 +111,38 @@ const hasTwikoo = COMMENTS_ENABLED && Boolean(TWIKOO_ENV_ID);
 
 		return new Promise<TwikooClient | undefined>((resolve, reject) => {
 			const script = existingScript ?? document.createElement('script');
+			const loadFrom = (index: number) => {
+				if (index >= TWIKOO_SCRIPT_SOURCES.length) {
+					reject(new Error('Twikoo script failed to load'));
+					return;
+				}
+
+				script.src = TWIKOO_SCRIPT_SOURCES[index] ?? '';
+			};
 
 			script.addEventListener('load', () => {
+				const twikoo = getTwikooClient();
+				if (!twikoo) {
+					loadFrom(Number(script.dataset.sourceIndex ?? '0') + 1);
+					return;
+				}
+
 				script.dataset.ready = 'true';
-				resolve(getTwikooClient());
-			}, { once: true });
-			script.addEventListener('error', () => reject(new Error('Twikoo script failed to load')), { once: true });
+				resolve(twikoo);
+			});
+			script.addEventListener('error', () => {
+				const nextIndex = Number(script.dataset.sourceIndex ?? '0') + 1;
+				script.dataset.sourceIndex = String(nextIndex);
+				loadFrom(nextIndex);
+			});
 
 			if (!existingScript) {
 				script.id = TWIKOO_SCRIPT_ID;
-				script.src = TWIKOO_SCRIPT_SRC;
 				script.async = true;
 				script.crossOrigin = 'anonymous';
+				script.dataset.sourceIndex = '0';
 				document.head.append(script);
+				loadFrom(0);
 			}
 		});
 	};
@@ -135,8 +157,10 @@ const hasTwikoo = COMMENTS_ENABLED && Boolean(TWIKOO_ENV_ID);
 
 		try {
 			const twikoo = await ensureTwikooScript();
+			if (!twikoo) throw new Error('Twikoo client is unavailable');
+
 			root.replaceChildren();
-			twikoo?.init({
+			await twikoo.init({
 				envId,
 				el: '#twikoo',
 				region: root.dataset.region || undefined,
