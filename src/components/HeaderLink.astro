@@ -18,11 +18,11 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 		display: inline-flex;
 		height: var(--nav-control-size, 2.55rem);
 		align-items: center;
-		padding: 0 .88rem;
-		border-radius: 999px;
+		padding: 0 .62rem;
+		border-radius: .7rem;
 		color: var(--header-link-color, var(--muted));
 		font-size: .9rem;
-		font-weight: 720;
+		font-weight: 740;
 		letter-spacing: .018em;
 		line-height: 1;
 		text-decoration: none;
@@ -30,9 +30,9 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 	}
 	a::after {
 		position: absolute;
-		right: .95rem;
-		bottom: .34rem;
-		left: .95rem;
+		right: .62rem;
+		bottom: .24rem;
+		left: .62rem;
 		height: 1px;
 		border-radius: 999px;
 		background: var(--header-link-indicator, var(--accent));
@@ -42,17 +42,16 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 		transition: opacity .2s ease, transform .2s ease;
 	}
 	a:hover {
-		background: var(--header-link-hover-bg, color-mix(in srgb, var(--accent-soft) 62%, transparent));
+		background: transparent;
 		color: var(--header-link-hover-color, var(--ink));
 		transform: translateY(-1px);
 	}
 	a.active {
-		background: var(--header-link-active-bg, color-mix(in srgb, var(--accent-soft) 72%, transparent));
+		background: transparent;
 		color: var(--header-link-active-color, var(--accent-ink));
-		box-shadow: inset 0 0 0 1px var(--header-link-active-ring, color-mix(in srgb, var(--accent) 16%, transparent));
 	}
 	a.active::after {
-		opacity: var(--header-link-indicator-opacity, .52);
+		opacity: var(--header-link-indicator-opacity, .72);
 		transform: scaleX(1);
 	}
 </style>
