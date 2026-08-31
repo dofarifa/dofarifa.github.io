@@ -16,9 +16,10 @@ const searchPosts = posts.map((post) => ({
 	tags: post.data.tags,
 }));
 const randomPostUrls = searchPosts.map((post) => post.href);
+const isHome = Astro.url.pathname === '/';
 ---
 
-<header class="site-header">
+<header class:list={['site-header', { 'is-home': isHome }]}>
 	<nav class="shell nav" aria-label="主导航">
 		<a class="brand" href="/" aria-label={`${SITE_TITLE} 首页`}>
 			<span class="brand-mark" aria-hidden="true"><Image src={SITE_ICON} alt="" width={68} height={68} format="webp" quality={80} /></span>
@@ -99,6 +100,12 @@ const randomPostUrls = searchPosts.map((post) => post.href);
 		color: var(--header-ink, var(--ink));
 	}
 	.site-header::before { position: absolute; z-index: -1; inset: 0; background: color-mix(in srgb, var(--paper) 78%, transparent); content: ""; pointer-events: none; backdrop-filter: blur(12px) saturate(1.06); }
+	.site-header.is-home { margin-bottom: -4.85rem; }
+	.site-header.is-home::before {
+		background: linear-gradient(180deg, color-mix(in srgb, var(--paper) 78%, transparent), color-mix(in srgb, var(--paper) 38%, transparent) 68%, transparent);
+		backdrop-filter: blur(14px) saturate(1.08);
+		mask-image: linear-gradient(#000 62%, transparent);
+	}
 	.nav {
 		display: grid;
 		min-height: 3.75rem;

@@ -2,9 +2,9 @@
 	type="button"
 	class="theme-toggle"
 	data-theme-toggle
-	aria-label="切换到深色模式"
-	aria-pressed="false"
-	title="切换到深色模式"
+	aria-label="切换到浅色模式"
+	aria-pressed="true"
+	title="切换到浅色模式"
 >
 	<svg class="theme-icon moon-icon" viewBox="0 0 24 24" aria-hidden="true">
 		<path d="M20.1 15.2A8.2 8.2 0 0 1 8.8 3.9 8.6 8.6 0 1 0 20.1 15.2Z" />
@@ -79,7 +79,7 @@
 	window.addEventListener('storage', (event) => {
 		if (event.key !== storageKey) return;
 		const storedTheme = readStoredTheme();
-		applyTheme(storedTheme ?? 'light', false);
+		applyTheme(storedTheme ?? 'dark', false);
 	});
 
 	setupThemeControls();
