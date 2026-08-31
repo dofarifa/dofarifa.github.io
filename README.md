@@ -48,6 +48,19 @@ npm run preview
 
 ## 写一篇文章
 
+像 Hexo 一样用命令新建文章：
+
+```bash
+npm run new:post -- "文章标题"
+```
+
+也可以带上标签、草稿状态或自定义路径：
+
+```bash
+npm run new:post -- "Astro 笔记" --tags "技术,Astro" --draft
+npm run new:post -- "今天学到的事" --slug today-notes
+```
+
 在 `src/content/blog/` 新建 `.md` 或 `.mdx` 文件：
 
 ```md
