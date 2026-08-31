@@ -215,8 +215,11 @@ const hasTwikoo = COMMENTS_ENABLED && Boolean(TWIKOO_ENV_ID);
 	:global(#twikoo .tk-nick-link:hover),
 	:global(#twikoo .tk-submit-action-icon:hover) { color: var(--accent-ink); }
 	:global(#twikoo .tk-submit) { color: var(--ink); animation: comment-soft-arrival .62s cubic-bezier(.16, 1, .3, 1) both; }
-	:global(#twikoo .tk-submit .tk-avatar) { display: grid; width: 2.7rem; height: 2.7rem; place-items: center; margin-right: .78rem; border-radius: 50%; background: color-mix(in srgb, var(--ink) 10%, transparent); color: color-mix(in srgb, var(--muted) 86%, var(--ink)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 60%, transparent); }
-	:global(#twikoo .tk-avatar .tk-avatar-img) { width: 1.7rem; height: 1.7rem; color: currentColor; }
+	:global(#twikoo .tk-avatar) { overflow: hidden; border-radius: 50%; }
+	:global(#twikoo .tk-submit .tk-avatar) { display: grid; width: 2.7rem; height: 2.7rem; flex: 0 0 2.7rem; place-items: center; margin-right: .78rem; background: color-mix(in srgb, var(--ink) 10%, transparent); color: color-mix(in srgb, var(--muted) 86%, var(--ink)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 60%, transparent); }
+	:global(#twikoo .tk-avatar .tk-avatar-img) { color: currentColor; }
+	:global(#twikoo .tk-avatar img.tk-avatar-img) { display: block; width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+	:global(#twikoo .tk-avatar svg.tk-avatar-img) { width: 1.65rem; height: 1.65rem; }
 	:global(#twikoo .tk-main) { min-width: 0; }
 	:global(#twikoo .tk-meta-input) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; margin: 0 0 .62rem; }
 	:global(#twikoo .tk-meta-input .el-input) { width: 100% !important; margin: 0 !important; }
