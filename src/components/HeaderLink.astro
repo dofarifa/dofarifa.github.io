@@ -18,27 +18,27 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 		display: inline-flex;
 		height: var(--nav-control-size, 2.55rem);
 		align-items: center;
-		padding: 0 .82rem;
+		padding: 0 .88rem;
 		border-radius: 999px;
 		color: var(--header-link-color, var(--muted));
-		font-size: .94rem;
-		font-weight: 760;
-		letter-spacing: .03em;
+		font-size: .9rem;
+		font-weight: 720;
+		letter-spacing: .018em;
 		line-height: 1;
 		text-decoration: none;
 		transition: background-color .2s ease, color .2s ease, transform .2s ease;
 	}
 	a::after {
 		position: absolute;
-		right: .86rem;
-		bottom: .38rem;
-		left: .86rem;
-		height: 2px;
+		right: .95rem;
+		bottom: .34rem;
+		left: .95rem;
+		height: 1px;
 		border-radius: 999px;
 		background: var(--header-link-indicator, var(--accent));
 		content: "";
 		opacity: 0;
-		transform: scaleX(.35);
+		transform: scaleX(.45);
 		transition: opacity .2s ease, transform .2s ease;
 	}
 	a:hover {
@@ -49,9 +49,10 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 	a.active {
 		background: var(--header-link-active-bg, color-mix(in srgb, var(--accent-soft) 72%, transparent));
 		color: var(--header-link-active-color, var(--accent-ink));
+		box-shadow: inset 0 0 0 1px var(--header-link-active-ring, color-mix(in srgb, var(--accent) 16%, transparent));
 	}
 	a.active::after {
-		opacity: var(--header-link-indicator-opacity, .85);
+		opacity: var(--header-link-indicator-opacity, .52);
 		transform: scaleX(1);
 	}
 </style>
