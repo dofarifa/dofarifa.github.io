@@ -93,6 +93,9 @@ const isHome = Astro.url.pathname === '/';
 
 <style>
 	.site-header {
+		--header-bg-start: color-mix(in srgb, var(--paper) 82%, transparent);
+		--header-bg-mid: color-mix(in srgb, var(--paper) 52%, transparent);
+		--header-bg-end: color-mix(in srgb, var(--paper) 0%, transparent);
 		--nav-row-height: 3.3rem;
 		--nav-control-size: 2.38rem;
 		position: sticky;
@@ -101,12 +104,32 @@ const isHome = Astro.url.pathname === '/';
 		padding-block: .34rem .86rem;
 		color: var(--header-ink, var(--ink));
 	}
-	.site-header::before { position: absolute; z-index: -1; inset: 0; background: color-mix(in srgb, var(--paper) 78%, transparent); content: ""; pointer-events: none; backdrop-filter: blur(12px) saturate(1.06); }
-	.site-header.is-home { margin-bottom: -4.85rem; }
-	.site-header.is-home::before {
-		background: linear-gradient(180deg, rgba(17, 15, 25, .58), rgba(17, 15, 25, .38) 54%, rgba(17, 15, 25, .14) 76%, transparent);
+	.site-header::before {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		background: linear-gradient(180deg, var(--header-bg-start), var(--header-bg-mid) 58%, color-mix(in srgb, var(--header-bg-mid) 34%, transparent) 78%, var(--header-bg-end));
+		content: "";
+		pointer-events: none;
 		backdrop-filter: blur(18px) saturate(1.04);
 		mask-image: linear-gradient(#000 74%, transparent);
+	}
+	.site-header.is-home { margin-bottom: -4.85rem; }
+	:global([data-theme='dark']) .site-header {
+		--header-bg-start: rgba(17, 15, 25, .58);
+		--header-bg-mid: rgba(17, 15, 25, .36);
+		--header-bg-end: rgba(17, 15, 25, 0);
+		--header-brand-color: rgba(245, 242, 255, .9);
+		--header-link-color: rgba(245, 242, 255, .7);
+		--header-link-hover-color: rgba(255, 255, 255, .96);
+		--header-link-active-color: rgba(255, 255, 255, .96);
+		--header-link-indicator: color-mix(in srgb, var(--accent) 76%, white 12%);
+		--header-link-indicator-opacity: .72;
+		--header-tool-color: rgba(245, 242, 255, .68);
+		--header-tool-hover-color: rgba(255, 255, 255, .96);
+		--header-tool-hover-bg: rgba(255, 255, 255, .07);
+		--header-mark-bg: rgba(255, 255, 255, .08);
+		--header-mark-shadow: 0 .7rem 1.8rem rgba(0, 0, 0, .18);
 	}
 	.nav {
 		display: grid;
