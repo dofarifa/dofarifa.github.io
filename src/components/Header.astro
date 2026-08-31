@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import { SITE_ICON, SITE_TITLE } from '../consts';
+import { HOME_BANNER_POSTER, HOME_BANNER_VIDEO, SITE_ICON, SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 import SearchDialog from './SearchDialog.astro';
 import ThemeToggle from './ThemeToggle.astro';
@@ -17,6 +17,10 @@ const searchPosts = posts.map((post) => ({
 }));
 const randomPostUrls = searchPosts.map((post) => post.href);
 const isHome = Astro.url.pathname === '/';
+const homeMediaAssets = {
+	poster: HOME_BANNER_POSTER,
+	video: HOME_BANNER_VIDEO,
+};
 ---
 
 <header class:list={['site-header', { 'is-home': isHome }]}>
@@ -64,6 +68,7 @@ const isHome = Astro.url.pathname === '/';
 
 <SearchDialog posts={searchPosts} />
 <script type="application/json" id="random-post-urls" set:html={JSON.stringify(randomPostUrls)} />
+<script type="application/json" id="home-media-assets" set:html={JSON.stringify(homeMediaAssets)} />
 
 <script>
 	import { navigate } from 'astro:transitions/client';
@@ -80,6 +85,43 @@ const isHome = Astro.url.pathname === '/';
 				void navigate(postUrls[Math.floor(Math.random() * postUrls.length)]);
 			});
 		});
+
+		const warmupHomeMedia = () => {
+			const root = document.documentElement;
+			if (root.dataset.homeMediaWarmup === 'true' || location.pathname === '/') return;
+			const data = document.querySelector<HTMLScriptElement>('#home-media-assets');
+			if (!data?.textContent) return;
+			const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+			if (connection?.saveData || /2g/.test(connection?.effectiveType ?? '')) return;
+
+			root.dataset.homeMediaWarmup = 'true';
+			const { poster, video } = JSON.parse(data.textContent) as { poster?: string; video?: string };
+			const addPrefetch = (href: string, as: 'image' | 'video') => {
+				if (!href || document.head.querySelector(`link[data-home-media-prefetch][href="${href}"]`)) return;
+				const link = document.createElement('link');
+				link.rel = 'prefetch';
+				link.as = as;
+				link.href = href;
+				link.dataset.homeMediaPrefetch = 'true';
+				document.head.append(link);
+			};
+			const warmPoster = () => {
+				if (!poster) return;
+				addPrefetch(poster, 'image');
+				const image = new Image();
+				image.decoding = 'async';
+				image.src = poster;
+			};
+			const warmVideo = () => {
+				if (video && !window.matchMedia('(hover: none), (pointer: coarse)').matches) addPrefetch(video, 'video');
+			};
+			window.requestAnimationFrame(warmPoster);
+			const idle = (window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+			if (idle) idle(warmVideo, { timeout: 1800 });
+			else window.setTimeout(warmVideo, 1200);
+		};
+
+		warmupHomeMedia();
 	};
 
 	document.addEventListener('click', (event) => {

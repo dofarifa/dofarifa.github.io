@@ -335,12 +335,38 @@ const initMusicPlayer = (root: HTMLElement) => {
 		});
 	});
 
+	const loadPlaylist = () => void controller.loadPlaylist(playlistId).catch(() => undefined);
+	const schedulePlaylistLoad = () => {
+		if (controller.getState().status === 'ready') return;
+		const run = () => {
+			if (document.hidden) return;
+			loadPlaylist();
+		};
+
+		if ('IntersectionObserver' in window) {
+			const observer = new IntersectionObserver(([entry]) => {
+				if (!entry?.isIntersecting) return;
+				observer.disconnect();
+				window.requestAnimationFrame(() => {
+					const idle = (window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+					if (idle) idle(run, { timeout: 900 });
+					else window.setTimeout(run, 120);
+				});
+			}, { rootMargin: '160px 0px' });
+			observer.observe(root);
+			document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+			return;
+		}
+
+		window.requestAnimationFrame(run);
+	};
+
 	document.addEventListener('astro:before-swap', () => {
 		unsubscribe();
 		window.clearTimeout(noticeTimer);
 	}, { once: true });
 
-	void controller.loadPlaylist(playlistId).catch(() => undefined);
+	schedulePlaylistLoad();
 };
 
 const initMusicPlayers = () => {

@@ -42,6 +42,23 @@ const initMiniPlayer = () => {
 		void controller.loadPlaylist(playlistId).catch(() => undefined);
 	};
 
+	const schedulePlaylistPreload = () => {
+		const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+		if (connection?.saveData || /2g/.test(connection?.effectiveType ?? '')) return;
+
+		const idle = (window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+		const run = () => {
+			if (document.hidden) return;
+			preloadPlaylist();
+		};
+		if (idle) {
+			idle(run, { timeout: 4200 });
+			return;
+		}
+
+		window.setTimeout(run, 2600);
+	};
+
 	const render = (state: MusicControllerState) => {
 		latestState = state;
 		const track = state.currentTrack;
@@ -61,21 +78,10 @@ const initMiniPlayer = () => {
 	};
 
 	const unsubscribe = controller.subscribe((state) => render(state));
-	root.addEventListener('click', (event) => {
-		if (event.detail === 0 || !window.matchMedia('(hover: none), (pointer: coarse)').matches || root.dataset.expanded === 'true') return;
-		if (!(event.target as Element).closest('.mini-track')) return;
-		event.preventDefault();
-		root.dataset.expanded = 'true';
-	});
-	const collapseOnOutsidePointer = (event: PointerEvent) => {
-		if (!root.contains(event.target as Node)) root.dataset.expanded = 'false';
-	};
-	document.addEventListener('pointerdown', collapseOnOutsidePointer);
 	const bindControl = (button: HTMLButtonElement, action: () => void) => {
 		button.addEventListener('click', (event) => {
 			event.preventDefault();
 			event.stopPropagation();
-			root.dataset.expanded = 'true';
 			action();
 		});
 	};
@@ -85,10 +91,9 @@ const initMiniPlayer = () => {
 	bindControl(next, () => controller.next());
 	document.addEventListener('astro:before-swap', () => {
 		unsubscribe();
-		document.removeEventListener('pointerdown', collapseOnOutsidePointer);
 	}, { once: true });
 
-	window.setTimeout(preloadPlaylist, 0);
+	schedulePlaylistPreload();
 };
 
 initMiniPlayer();

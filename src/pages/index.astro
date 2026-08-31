@@ -24,11 +24,11 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 		</Fragment>
 	)}
 	<main>
-		<section class="shell hero">
+		<section class="shell hero" style={HOME_BANNER_POSTER ? `--hero-poster: url('${HOME_BANNER_POSTER}')` : undefined}>
 			{(HOME_BANNER_VIDEO || HOME_BANNER_POSTER) && (
 				<div class="hero-media" style={HOME_BANNER_POSTER ? `--hero-poster: url('${HOME_BANNER_POSTER}')` : undefined} aria-hidden="true" data-hero-media>
-					{HOME_BANNER_POSTER && <img class="hero-poster" src={HOME_BANNER_POSTER} alt="" decoding="async" fetchpriority="high" />}
-					{HOME_BANNER_VIDEO && <video class="hero-video" poster={HOME_BANNER_POSTER} muted loop playsinline preload="none" data-hero-video data-src={HOME_BANNER_VIDEO}></video>}
+					{HOME_BANNER_POSTER && <img class="hero-poster" src={HOME_BANNER_POSTER} alt="" decoding="async" fetchpriority="high" data-hero-poster />}
+					{HOME_BANNER_VIDEO && <video class="hero-video" poster={HOME_BANNER_POSTER} muted loop playsinline preload="metadata" data-hero-video data-src={HOME_BANNER_VIDEO}></video>}
 				</div>
 			)}
 			<h1 class="sr-only">{SITE_TAGLINE}</h1>
@@ -59,7 +59,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 
 				{featuredPost && (
 					<a class="featured-card" href={`/blog/${featuredPost.id}/`}>
-						{featuredPost.data.heroImage && <Image src={featuredPost.data.heroImage} width={960} height={560} alt="" />}
+						{featuredPost.data.heroImage && <Image src={featuredPost.data.heroImage} width={960} height={560} alt="" loading="lazy" decoding="async" />}
 						<div class="featured-copy">
 							<div class="post-meta"><span>推荐阅读</span><FormattedDate date={featuredPost.data.pubDate} /></div>
 							<h3>{featuredPost.data.title}</h3>
@@ -72,7 +72,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 				<div class="post-grid">
 					{recentPosts.map((post) => (
 						<a class="post-card" href={`/blog/${post.id}/`}>
-							{post.data.heroImage && <Image src={post.data.heroImage} width={640} height={400} alt="" />}
+							{post.data.heroImage && <Image src={post.data.heroImage} width={640} height={400} alt="" loading="lazy" decoding="async" />}
 							<div class="post-card-copy">
 								<p class="post-meta"><FormattedDate date={post.data.pubDate} /><span>{post.data.tags[0] ?? '随笔'}</span></p>
 								<h3>{post.data.title}</h3>
@@ -129,17 +129,20 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 			const requestIdle = (callback: () => void) => {
 				const idle = (window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
 				if (idle) {
-					idle(callback, { timeout: 1400 });
+					idle(callback, { timeout: 520 });
 					return;
 				}
 
-				window.setTimeout(callback, 700);
+				window.setTimeout(callback, 160);
 			};
 
 			document.querySelectorAll<HTMLVideoElement>('[data-hero-video]').forEach((video) => {
 				if (video.dataset.initialized === 'true') return;
 				video.dataset.initialized = 'true';
 				const media = video.closest<HTMLElement>('[data-hero-media]');
+				const poster = media?.querySelector<HTMLImageElement>('[data-hero-poster]');
+				if (poster?.complete) media?.classList.add('is-poster-ready');
+				else poster?.addEventListener('load', () => media?.classList.add('is-poster-ready'), { once: true });
 
 				if (!canPlayMotion || prefersLightPayload) {
 					video.pause();
@@ -151,7 +154,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 				video.loop = true;
 				video.playsInline = true;
 				video.defaultMuted = true;
-				video.preload = 'metadata';
+				video.preload = 'auto';
 
 				const attachSource = () => {
 					if (video.dataset.sourceAttached === 'true') return;
@@ -169,7 +172,9 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 					void video.play().catch(() => undefined);
 				};
 
-				const schedulePlayback = () => requestIdle(playVideo);
+				const schedulePlayback = () => {
+					window.requestAnimationFrame(() => requestIdle(playVideo));
+				};
 				const handleVisibilityChange = () => {
 					if (document.hidden) {
 						video.pause();
@@ -212,8 +217,9 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 </BaseLayout>
 
 <style>
-	.hero { --hero-radius: 2rem; position: relative; display: flex; overflow: hidden; min-height: clamp(31rem, 42vw, 43rem); align-items: flex-end; margin-top: 0; padding: clamp(6.2rem, 9vw, 7.5rem) clamp(1.5rem, 3.5vw, 3rem) clamp(1.5rem, 3.5vw, 3rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: var(--hero-radius); background: linear-gradient(135deg, #211d34, #3a3154 52%, #151723); box-shadow: 0 1.5rem 4.5rem color-mix(in srgb, var(--decor-shadow) 58%, transparent); isolation: isolate; contain: paint; }
-	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: #14121f var(--hero-poster, none) center center / cover no-repeat; contain: paint; clip-path: inset(0 round var(--hero-radius)); transform: translateZ(0); }
+	main { user-select: none; -webkit-user-select: none; }
+	.hero { --hero-radius: 2rem; position: relative; display: flex; overflow: hidden; min-height: clamp(31rem, 42vw, 43rem); align-items: flex-end; margin-top: 0; padding: clamp(6.2rem, 9vw, 7.5rem) clamp(1.5rem, 3.5vw, 3rem) clamp(1.5rem, 3.5vw, 3rem); border: 1px solid color-mix(in srgb, var(--accent) 10%, transparent); border-radius: var(--hero-radius); background: #15151c var(--hero-poster, none) center center / cover no-repeat; box-shadow: 0 1.5rem 4.5rem color-mix(in srgb, var(--decor-shadow) 58%, transparent); isolation: isolate; contain: paint; }
+	.hero-media { position: absolute; z-index: -3; inset: 0; overflow: hidden; border-radius: inherit; background: #15151c var(--hero-poster, none) center center / cover no-repeat; contain: paint; clip-path: inset(0 round var(--hero-radius)); transform: translateZ(0); }
 	.hero-poster, .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; backface-visibility: hidden; transform: scale(1.018); transform-origin: center; }
 	.hero-poster { display: block; filter: saturate(1.02) contrast(1.02); }
 	.hero-video { opacity: 0; transition: opacity .45s ease; }

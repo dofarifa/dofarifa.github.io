@@ -6,7 +6,7 @@ import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
-import { NETEASE_PLAYLIST_ID, SITE_AUTHOR, SITE_ICON, SITE_TITLE } from '../consts';
+import { SITE_AUTHOR, SITE_ICON, SITE_TITLE } from '../consts';
 
 interface Props {
 	title: string;
@@ -19,10 +19,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const { title, description, image = FallbackImage } = Astro.props;
 const favicon = await getImage({ src: SITE_ICON, width: 64, height: 64, format: 'webp', quality: 82 });
 const touchIcon = await getImage({ src: SITE_ICON, width: 180, height: 180, format: 'webp', quality: 82 });
-const musicApiUrl = new URL('https://api.i-meto.com/meting/api');
-musicApiUrl.searchParams.set('server', 'netease');
-musicApiUrl.searchParams.set('type', 'playlist');
-musicApiUrl.searchParams.set('id', NETEASE_PLAYLIST_ID);
 ---
 
 <!-- Global Metadata -->
@@ -33,7 +29,6 @@ musicApiUrl.searchParams.set('id', NETEASE_PLAYLIST_ID);
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="preconnect" href="https://api.i-meto.com" />
 <link rel="preconnect" href="https://music.163.com" />
-<link rel="preload" as="fetch" href={musicApiUrl.href} crossorigin="anonymous" />
 <link
 	rel="alternate"
 	type="application/rss+xml"

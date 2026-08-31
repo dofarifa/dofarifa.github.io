@@ -270,14 +270,22 @@ class MusicController {
 	}
 
 	private warmPlaylistAssets(tracks: MusicTrack[]) {
-		tracks.slice(0, 16).forEach((track, index) => {
-			if (track.pic) {
-				const image = new Image();
-				image.decoding = 'async';
-				image.src = track.pic;
-			}
-			if (index < 5 && track.lrc) void fetch(track.lrc, { cache: 'force-cache' }).catch(() => undefined);
-		});
+		const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+		if (connection?.saveData || /2g/.test(connection?.effectiveType ?? '')) return;
+
+		const run = () => {
+			tracks.slice(0, 6).forEach((track, index) => {
+				if (track.pic) {
+					const image = new Image();
+					image.decoding = 'async';
+					image.src = track.pic;
+				}
+				if (index < 2 && track.lrc) void fetch(track.lrc, { cache: 'force-cache' }).catch(() => undefined);
+			});
+		};
+		const idle = (window as Window & { requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number }).requestIdleCallback;
+		if (idle) idle(run, { timeout: 5000 });
+		else window.setTimeout(run, 3200);
 	}
 
 	private updateMediaSession(track: MusicTrack) {
