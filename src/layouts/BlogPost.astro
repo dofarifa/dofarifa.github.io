@@ -140,7 +140,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-meta svg { width: .9rem; height: .9rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9; }
 	.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; align-items: start; gap: 1rem; margin-top: 1.25rem; }
 	.article-comments-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; gap: 1rem; margin-top: 1rem; }
-	.article-comments { grid-column: 1; min-width: 0; }
+	.article-comments { grid-column: 1 / -1; min-width: 0; }
 	.article-main { min-width: 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: var(--radius-card); background: color-mix(in srgb, var(--surface) 92%, transparent); box-shadow: var(--shadow); }
 	.article-summary { padding: 1.05rem 1.2rem; border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--line)); border-radius: 1rem; background: color-mix(in srgb, var(--surface-lilac) 46%, var(--surface)); }
 	.article-summary div { display: inline-flex; align-items: center; gap: .42rem; color: var(--accent-ink); font-size: .82rem; font-weight: 800; }
@@ -172,6 +172,8 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.toc-card .depth-3 a { padding-left: 1.2rem; font-size: .7rem; }
 	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
 	:global([data-theme='dark']) .author-cover { background: var(--avatar-card-background); }
+	:global(.site-footer .footer-stack) { width: min(1520px, calc(100% - clamp(2rem, 4.5vw, 4rem))); }
+	:global(.site-footer .footer-inner) { background: linear-gradient(145deg, color-mix(in srgb, var(--surface-blue) 76%, var(--surface)), color-mix(in srgb, var(--surface) 78%, var(--paper))); box-shadow: 0 1rem 2.8rem color-mix(in srgb, var(--decor-shadow) 24%, transparent); }
 	@media (prefers-reduced-motion: reduce) {
 		.author-card-inner, .author-github { transition: none; }
 		.author-card:hover .author-card-inner, .author-card:has(.author-github:focus-visible) .author-card-inner { transform: none; }

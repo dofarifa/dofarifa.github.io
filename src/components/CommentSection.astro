@@ -47,7 +47,7 @@ const commentsReady = COMMENTS_ENABLED && Boolean(COMMENTS_REPO);
 </section>
 
 <script>
-	const getUtterancesTheme = () => document.documentElement.dataset.theme === 'dark' ? 'photon-dark' : 'github-light';
+	const getUtterancesTheme = () => document.documentElement.dataset.theme === 'dark' ? 'github-dark' : 'github-light';
 
 	const updateUtterancesTheme = () => {
 		document.querySelectorAll<HTMLIFrameElement>('iframe.utterances-frame').forEach((frame) => {
@@ -88,9 +88,9 @@ const commentsReady = COMMENTS_ENABLED && Boolean(COMMENTS_REPO);
 				return;
 			}
 
-			window.setTimeout(() => {
+			window.requestAnimationFrame(() => {
 				loadUtterances(root);
-			}, 900);
+			});
 		});
 	};
 
@@ -105,7 +105,7 @@ const commentsReady = COMMENTS_ENABLED && Boolean(COMMENTS_REPO);
 </script>
 
 <style>
-	.comment-card { position: relative; overflow: hidden; padding: clamp(1.1rem, 2.6vw, 1.55rem); border: 1px solid var(--line); border-radius: var(--radius-card); background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 94%, transparent), color-mix(in srgb, var(--surface-lilac) 36%, var(--surface))); box-shadow: var(--shadow); isolation: isolate; }
+	.comment-card { position: relative; overflow: hidden; padding: clamp(1.1rem, 2.6vw, 1.75rem); border: 1px solid var(--line); border-radius: var(--radius-card); background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 94%, transparent), color-mix(in srgb, var(--surface-lilac) 36%, var(--surface))); box-shadow: var(--shadow); isolation: isolate; }
 	.comment-orb { position: absolute; z-index: -1; right: -7rem; top: -8rem; width: 17rem; aspect-ratio: 1; border-radius: 999px; background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 68%); filter: blur(3px); opacity: .68; pointer-events: none; }
 	.comment-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid color-mix(in srgb, var(--line) 56%, transparent); }
 	.comment-heading h2 { margin: 0; font-size: clamp(1.45rem, 2vw, 1.9rem); letter-spacing: -.03em; }
@@ -113,15 +113,19 @@ const commentsReady = COMMENTS_ENABLED && Boolean(COMMENTS_REPO);
 	.comment-heading a { display: inline-flex; flex: none; align-items: center; gap: .22rem; color: var(--accent-ink); font-size: .8rem; font-weight: 760; text-decoration: none; }
 	.comment-heading a:hover { text-decoration: underline; text-underline-offset: .25em; }
 	.comment-heading svg { width: .92rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
-	.comment-stage { margin-top: 1rem; padding: clamp(.75rem, 1.8vw, 1rem); border-radius: 1rem; background: color-mix(in srgb, var(--paper) 52%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 46%, transparent); }
-	.comment-panel { overflow: hidden; min-height: 12rem; padding: clamp(.7rem, 1.8vw, 1rem); border: 1px solid color-mix(in srgb, var(--line) 62%, transparent); border-radius: .85rem; background: color-mix(in srgb, var(--surface) 92%, var(--paper)); box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); }
+	.comment-stage { max-width: 78rem; margin: 1rem auto 0; padding: clamp(.65rem, 1.4vw, .9rem); border-radius: 1rem; background: color-mix(in srgb, var(--paper) 58%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--line) 42%, transparent); }
+	.comment-panel { overflow: hidden; min-height: 12rem; padding: clamp(.5rem, 1.2vw, .72rem); border: 1px solid color-mix(in srgb, var(--line) 52%, transparent); border-radius: .82rem; background: #0d1117; box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); isolation: isolate; }
+	:global([data-theme='light']) .comment-panel { background: #ffffff; }
+	.comment-panel[data-loaded='true'] { padding: 0; border-color: color-mix(in srgb, var(--line) 42%, transparent); background: #0d1117; }
+	:global([data-theme='light']) .comment-panel[data-loaded='true'] { background: #ffffff; }
 	.comment-loading { display: inline-flex; align-items: center; gap: .62rem; color: var(--muted); font-size: .82rem; font-weight: 680; }
 	.comment-loading span { width: .66rem; height: .66rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 .38rem color-mix(in srgb, var(--accent) 14%, transparent); animation: comment-pulse 1.25s cubic-bezier(.22, 1, .36, 1) infinite; }
 	.comment-setup h3 { margin: 0; font-size: 1rem; }
 	.comment-setup p { margin: .45rem 0 0; color: var(--muted); font-size: .84rem; line-height: 1.8; }
 	.comment-setup code { padding: .12rem .34rem; border-radius: .35rem; background: var(--paper-deep); color: var(--ink); font-size: .86em; }
-	:global(.utterances) { max-width: 100% !important; margin-inline: auto !important; }
-	:global(.utterances-frame) { border-radius: .65rem; background: color-mix(in srgb, var(--surface) 92%, var(--paper)); color-scheme: light dark; }
+	:global(.utterances) { width: calc(100% + 7.2rem) !important; max-width: calc(100% + 7.2rem) !important; margin: -2.65rem -1.55rem -1.35rem -5.65rem !important; }
+	:global(.utterances-frame) { display: block; border-radius: .65rem; background: #0d1117; color-scheme: light dark; }
+	:global([data-theme='light'] .utterances-frame) { background: #ffffff; }
 
 	@keyframes comment-pulse {
 		0%, 100% { opacity: .65; transform: scale(.88); }
@@ -133,6 +137,7 @@ const commentsReady = COMMENTS_ENABLED && Boolean(COMMENTS_REPO);
 		.comment-card { padding: 1rem; border-radius: 1.15rem; }
 		.comment-stage { padding: .5rem; }
 		.comment-panel { padding: .5rem; border-radius: .85rem; }
+		:global(.utterances) { width: calc(100% + 5.4rem) !important; max-width: calc(100% + 5.4rem) !important; margin: -2.45rem -1.15rem -1.15rem -4.25rem !important; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
