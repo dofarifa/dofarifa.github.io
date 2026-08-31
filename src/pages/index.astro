@@ -20,7 +20,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 <BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	{HOME_BANNER_POSTER && (
 		<Fragment slot="head">
-			<link rel="preload" as="image" href={HOME_BANNER_POSTER} fetchpriority="high" />
+			<link rel="preload" as="image" href={HOME_BANNER_POSTER} fetchpriority="high" media="(min-width: 761px)" />
 		</Fragment>
 	)}
 	<main>
@@ -302,6 +302,10 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 		.featured-card { grid-template-columns: 1fr; }
 		.featured-card :global(img) { min-height: 14rem; max-height: 22rem; }
 		.sidebar { grid-template-columns: 1fr; }
+	}
+	@media (max-width: 760px) {
+		.hero { display: none; }
+		.topic-bar { margin-top: 1rem; }
 	}
 	@media (max-width: 620px) {
 		.post-grid { grid-template-columns: 1fr; }

@@ -93,6 +93,7 @@ const homeMediaAssets = {
 			if (!data?.textContent) return;
 			const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
 			if (connection?.saveData || /2g/.test(connection?.effectiveType ?? '')) return;
+			if (window.matchMedia('(max-width: 760px)').matches) return;
 
 			root.dataset.homeMediaWarmup = 'true';
 			const { poster, video } = JSON.parse(data.textContent) as { poster?: string; video?: string };
@@ -214,6 +215,7 @@ const homeMediaAssets = {
 	.mobile-menu-panel :global(a) { display: flex; min-height: 2.65rem; align-items: center; padding: .6rem .8rem; border-radius: .7rem; color: var(--muted); font-size: .88rem; font-weight: 600; line-height: 1; text-decoration: none; }
 	.mobile-menu-panel :global(a:hover), .mobile-menu-panel :global(a.active) { background: var(--accent-soft); color: var(--accent-ink); }
 	@media (max-width: 760px) {
+		.site-header.is-home { margin-bottom: 0; }
 		.nav { grid-template-columns: 1fr auto; }
 		.desktop-nav, .rss-link { display: none; }
 		.mobile-menu { display: block; }
