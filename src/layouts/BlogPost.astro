@@ -80,7 +80,6 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 						<p>{description}</p>
 					</section>
 					<div class="prose article-body"><slot /></div>
-					<CommentSection title={title} />
 				</div>
 
 				<aside class="article-sidebar" aria-label="文章侧边栏">
@@ -112,10 +111,12 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 				</aside>
 			</div>
 
-			<footer class="article-end">
-				<p>感谢你读到这里。</p>
-				<a href="/blog">继续阅读其他文章</a>
-			</footer>
+			<div class="shell article-comments-layout">
+				<div class="article-comments">
+					<CommentSection title={title} />
+				</div>
+			</div>
+
 		</article>
 	</main>
 </BaseLayout>
@@ -138,6 +139,8 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-meta span { display: inline-flex; align-items: center; gap: .35rem; }
 	.article-meta svg { width: .9rem; height: .9rem; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.9; }
 	.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; align-items: start; gap: 1rem; margin-top: 1.25rem; }
+	.article-comments-layout { display: grid; grid-template-columns: minmax(0, 1fr) 18.5rem; gap: 1rem; margin-top: 1rem; }
+	.article-comments { grid-column: 1; min-width: 0; }
 	.article-main { min-width: 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: var(--radius-card); background: color-mix(in srgb, var(--surface) 92%, transparent); box-shadow: var(--shadow); }
 	.article-summary { padding: 1.05rem 1.2rem; border: 1px solid color-mix(in srgb, var(--accent) 12%, var(--line)); border-radius: 1rem; background: color-mix(in srgb, var(--surface-lilac) 46%, var(--surface)); }
 	.article-summary div { display: inline-flex; align-items: center; gap: .42rem; color: var(--accent-ink); font-size: .82rem; font-weight: 800; }
@@ -167,9 +170,6 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.toc-card a { display: block; overflow: hidden; padding: .45rem .55rem; border-radius: .65rem; color: var(--muted); font-size: .76rem; line-height: 1.35; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
 	.toc-card a:hover { background: var(--accent-soft); color: var(--accent-ink); }
 	.toc-card .depth-3 a { padding-left: 1.2rem; font-size: .7rem; }
-	.article-end { width: min(800px, calc(100% - 2rem)); margin: 2rem auto 0; padding: 2rem; border-radius: var(--radius-card); background: var(--surface-mint); text-align: center; }
-	.article-end p { margin: 0 0 .65rem; color: var(--muted); }
-	.article-end a { font-size: .85rem; font-weight: 700; text-decoration: none; }
 	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
 	:global([data-theme='dark']) .author-cover { background: var(--avatar-card-background); }
 	@media (prefers-reduced-motion: reduce) {
@@ -180,6 +180,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	}
 	@media (max-width: 920px) {
 		.article-layout { grid-template-columns: 1fr; }
+		.article-comments-layout { grid-template-columns: 1fr; }
 		.article-sidebar { position: static; grid-template-columns: 1fr 1fr; }
 	}
 	@media (max-width: 680px) {
@@ -187,6 +188,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 		.article-hero::after { height: 3rem; clip-path: polygon(0 68%, 52% 86%, 100% 68%, 100% 100%, 0 100%); }
 		.article-hero h1 { font-size: clamp(2.25rem, 11vw, 3.5rem); }
 		.article-layout { width: min(100% - 1rem, 1180px); margin-top: .85rem; }
+		.article-comments-layout { width: min(100% - 1rem, 1180px); }
 		.article-main { padding: .75rem; border-radius: 1.15rem; }
 		.article-body { padding: 1.6rem .4rem; }
 		.article-sidebar { grid-template-columns: 1fr; }
