@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import CommentSection from '../components/CommentSection.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import GitHubIcon from '../components/GitHubIcon.astro';
 import { GITHUB_PROFILE_URL, SITE_AVATAR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
@@ -79,6 +80,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 						<p>{description}</p>
 					</section>
 					<div class="prose article-body"><slot /></div>
+					<CommentSection title={title} />
 				</div>
 
 				<aside class="article-sidebar" aria-label="文章侧边栏">

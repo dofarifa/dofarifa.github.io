@@ -1,0 +1,128 @@
+---
+import { COMMENTS_ENABLED, COMMENTS_ISSUE_TERM, COMMENTS_LABEL, COMMENTS_REPO } from '../consts';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+const commentsReady = COMMENTS_ENABLED && Boolean(COMMENTS_REPO);
+---
+
+<section class="comment-section" aria-labelledby="comment-title">
+	<div class="comment-heading">
+		<div>
+			<h2 id="comment-title">评论</h2>
+			<p>读完之后，可以把你的想法留在这里。</p>
+		</div>
+		<a href={`https://github.com/${COMMENTS_REPO}/issues`} target="_blank" rel="noreferrer">查看讨论</a>
+	</div>
+
+	{commentsReady ? (
+		<div
+			class="comment-panel"
+			data-utterances-root
+			data-repo={COMMENTS_REPO}
+			data-issue-term={COMMENTS_ISSUE_TERM}
+			data-label={COMMENTS_LABEL}
+			data-title={title}
+		>
+			<div class="comment-loading" aria-live="polite">
+				<span aria-hidden="true"></span>
+				正在唤醒评论区
+			</div>
+		</div>
+	) : (
+		<div class="comment-panel comment-setup">
+			<h3>评论区还没有启用</h3>
+			<p>请先在 <code>src/consts.ts</code> 里填写评论仓库配置，然后重新部署。</p>
+		</div>
+	)}
+</section>
+
+<script>
+	const getUtterancesTheme = () => document.documentElement.dataset.theme === 'dark' ? 'github-dark' : 'github-light';
+
+	const updateUtterancesTheme = () => {
+		document.querySelectorAll<HTMLIFrameElement>('iframe.utterances-frame').forEach((frame) => {
+			frame.contentWindow?.postMessage({ type: 'set-theme', theme: getUtterancesTheme() }, 'https://utteranc.es');
+		});
+	};
+
+	const loadUtterances = (root: HTMLElement) => {
+		if (root.dataset.loaded === 'true') return;
+		root.dataset.loaded = 'true';
+		root.replaceChildren();
+
+		const script = document.createElement('script');
+		script.src = 'https://utteranc.es/client.js';
+		script.async = true;
+		script.crossOrigin = 'anonymous';
+		script.setAttribute('repo', root.dataset.repo ?? '');
+		script.setAttribute('issue-term', root.dataset.issueTerm ?? 'pathname');
+		script.setAttribute('label', root.dataset.label ?? 'blog-comment');
+		script.setAttribute('theme', getUtterancesTheme());
+		script.setAttribute('crossorigin', 'anonymous');
+		root.append(script);
+	};
+
+	const setupComments = () => {
+		document.querySelectorAll<HTMLElement>('[data-utterances-root]').forEach((root) => {
+			if (root.dataset.observed === 'true') return;
+			root.dataset.observed = 'true';
+
+			if ('IntersectionObserver' in window) {
+				const observer = new IntersectionObserver(([entry]) => {
+					if (!entry?.isIntersecting) return;
+					observer.disconnect();
+					loadUtterances(root);
+				}, { rootMargin: '420px 0px' });
+				observer.observe(root);
+				document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+				return;
+			}
+
+			window.setTimeout(() => loadUtterances(root), 900);
+		});
+	};
+
+	if (document.documentElement.dataset.utterancesThemeObserver !== 'true') {
+		document.documentElement.dataset.utterancesThemeObserver = 'true';
+		const themeObserver = new MutationObserver(updateUtterancesTheme);
+		themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+	}
+
+	setupComments();
+	document.addEventListener('astro:page-load', setupComments);
+</script>
+
+<style>
+	.comment-section { margin-top: clamp(2.5rem, 5vw, 4rem); }
+	.comment-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+	.comment-heading h2 { margin: 0; font-size: clamp(1.45rem, 2vw, 1.9rem); letter-spacing: -.03em; }
+	.comment-heading p { margin: .35rem 0 0; color: var(--muted); font-size: .86rem; line-height: 1.7; }
+	.comment-heading a { flex: none; color: var(--accent-ink); font-size: .8rem; font-weight: 760; text-decoration: none; }
+	.comment-heading a:hover { text-decoration: underline; text-underline-offset: .25em; }
+	.comment-panel { overflow: hidden; min-height: 12rem; padding: clamp(1rem, 2.2vw, 1.35rem); border: 1px solid color-mix(in srgb, var(--line) 78%, transparent); border-radius: 1.15rem; background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 94%, transparent), color-mix(in srgb, var(--surface-lilac) 38%, var(--surface))); box-shadow: 0 1.1rem 2.8rem color-mix(in srgb, var(--ink) 8%, transparent); }
+	.comment-loading { display: inline-flex; align-items: center; gap: .62rem; color: var(--muted); font-size: .82rem; font-weight: 680; }
+	.comment-loading span { width: .66rem; height: .66rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 .38rem color-mix(in srgb, var(--accent) 14%, transparent); animation: comment-pulse 1.25s cubic-bezier(.22, 1, .36, 1) infinite; }
+	.comment-setup h3 { margin: 0; font-size: 1rem; }
+	.comment-setup p { margin: .45rem 0 0; color: var(--muted); font-size: .84rem; line-height: 1.8; }
+	.comment-setup code { padding: .12rem .34rem; border-radius: .35rem; background: var(--paper-deep); color: var(--ink); font-size: .86em; }
+	:global(.utterances) { max-width: 100% !important; }
+	:global(.utterances-frame) { color-scheme: light dark; }
+
+	@keyframes comment-pulse {
+		0%, 100% { opacity: .65; transform: scale(.88); }
+		50% { opacity: 1; transform: scale(1); }
+	}
+
+	@media (max-width: 560px) {
+		.comment-heading { display: grid; align-items: start; }
+		.comment-panel { border-radius: 1rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.comment-loading span { animation: none; }
+	}
+</style>

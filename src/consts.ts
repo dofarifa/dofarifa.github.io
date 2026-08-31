@@ -5,6 +5,12 @@ export const SITE_DESCRIPTION = '黑色的眼睛代表真实';
 export const SITE_AUTHOR = 'kkkk';
 export const SITE_TAGLINE = '把复杂的事想清楚，把值得的事写下来。';
 export const GITHUB_PROFILE_URL = 'https://github.com/dofarifa';
+// 文章评论：使用 Utterances，将每篇文章的评论存到 GitHub Issues。
+// 启用前需要在 GitHub 安装 utterances app，并授权下面这个仓库。
+export const COMMENTS_ENABLED = true;
+export const COMMENTS_REPO = 'dofarifa/dofarifa.github.io';
+export const COMMENTS_ISSUE_TERM = 'pathname';
+export const COMMENTS_LABEL = 'blog-comment';
 // 网易云公开歌单分享链接中的 id，用于独立音乐播放器页面。
 export const NETEASE_PLAYLIST_ID = '3058435980';
 // 音乐页背景支持 public 目录路径或完整 URL。视频优先于图片；都留空时使用当前歌曲专辑封面。

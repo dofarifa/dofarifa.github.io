@@ -31,11 +31,12 @@ const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
 	a::after {
 		position: absolute;
 		right: .62rem;
-		bottom: .24rem;
+		bottom: .12rem;
 		left: .62rem;
-		height: 1px;
+		height: 2px;
 		border-radius: 999px;
 		background: var(--header-link-indicator, var(--accent));
+		box-shadow: 0 .22rem .65rem color-mix(in srgb, var(--header-link-indicator, var(--accent)) 34%, transparent);
 		content: "";
 		opacity: 0;
 		transform: scaleX(.45);

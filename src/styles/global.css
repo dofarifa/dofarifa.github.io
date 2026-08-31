@@ -75,11 +75,15 @@ body {
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
+	user-select: none;
+	-webkit-user-select: none;
 }
 a { color: var(--accent-ink); }
+img, svg { -webkit-user-drag: none; }
 img { display: block; max-width: 100%; height: auto; }
 h1, h2, h3, h4, h5, h6 { color: var(--ink); font-family: var(--font-display); font-weight: 700; line-height: 1.2; text-wrap: balance; }
 button, input, textarea, select { font: inherit; }
+input, textarea, select, .prose, .prose *, code, pre { user-select: text; -webkit-user-select: text; }
 ::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--ink); }
 * { scrollbar-color: var(--scroll-thumb) var(--paper); scrollbar-width: thin; }
 *:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 55%, white); outline-offset: 3px; }
