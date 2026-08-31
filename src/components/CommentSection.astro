@@ -93,58 +93,27 @@ const hasTwikoo = COMMENTS_ENABLED && Boolean(TWIKOO_ENV_ID);
 			lang?: string;
 		}) => Promise<void> | void;
 	};
+	type TwikooInit = TwikooClient['init'];
+	type TwikooModule = TwikooClient | TwikooInit | { default?: TwikooClient | TwikooInit };
 
-	const TWIKOO_SCRIPT_ID = 'twikoo-client-script';
-	const TWIKOO_SCRIPT_SOURCES = [
-		'https://cdn.jsdelivr.net/npm/twikoo@1.7.20/dist/twikoo.all.min.js',
-		'https://unpkg.com/twikoo@1.7.20/dist/twikoo.all.min.js',
-	];
+	const normalizeTwikooClient = (candidate: TwikooModule): TwikooClient => {
+		if (typeof candidate === 'function') return { init: candidate };
 
-	const getTwikooClient = () => (window as Window & { twikoo?: TwikooClient }).twikoo;
+		if ('init' in candidate && typeof candidate.init === 'function') return candidate;
 
-	const ensureTwikooScript = () => {
-		const currentClient = getTwikooClient();
-		if (currentClient) return Promise.resolve(currentClient);
+		const nestedDefault = candidate.default;
+		if (typeof nestedDefault === 'function') return { init: nestedDefault };
+		if (nestedDefault && typeof nestedDefault === 'object' && 'init' in nestedDefault && typeof nestedDefault.init === 'function') {
+			return nestedDefault;
+		}
 
-		const existingScript = document.getElementById(TWIKOO_SCRIPT_ID) as HTMLScriptElement | null;
-		if (existingScript?.dataset.ready === 'true') return Promise.resolve(getTwikooClient());
+		throw new Error('Twikoo client export is invalid');
+	};
 
-		return new Promise<TwikooClient | undefined>((resolve, reject) => {
-			const script = existingScript ?? document.createElement('script');
-			const loadFrom = (index: number) => {
-				if (index >= TWIKOO_SCRIPT_SOURCES.length) {
-					reject(new Error('Twikoo script failed to load'));
-					return;
-				}
-
-				script.src = TWIKOO_SCRIPT_SOURCES[index] ?? '';
-			};
-
-			script.addEventListener('load', () => {
-				const twikoo = getTwikooClient();
-				if (!twikoo) {
-					loadFrom(Number(script.dataset.sourceIndex ?? '0') + 1);
-					return;
-				}
-
-				script.dataset.ready = 'true';
-				resolve(twikoo);
-			});
-			script.addEventListener('error', () => {
-				const nextIndex = Number(script.dataset.sourceIndex ?? '0') + 1;
-				script.dataset.sourceIndex = String(nextIndex);
-				loadFrom(nextIndex);
-			});
-
-			if (!existingScript) {
-				script.id = TWIKOO_SCRIPT_ID;
-				script.async = true;
-				script.crossOrigin = 'anonymous';
-				script.dataset.sourceIndex = '0';
-				document.head.append(script);
-				loadFrom(0);
-			}
-		});
+	let twikooClientPromise: Promise<TwikooClient> | undefined;
+	const getTwikooClient = () => {
+		twikooClientPromise ??= import('twikoo').then((module) => normalizeTwikooClient(module as TwikooModule));
+		return twikooClientPromise;
 	};
 
 	const loadTwikoo = async (root: HTMLElement) => {
@@ -156,18 +125,17 @@ const hasTwikoo = COMMENTS_ENABLED && Boolean(TWIKOO_ENV_ID);
 		root.dataset.loaded = 'true';
 
 		try {
-			const twikoo = await ensureTwikooScript();
-			if (!twikoo) throw new Error('Twikoo client is unavailable');
-
+			const twikooClient = await getTwikooClient();
 			root.replaceChildren();
-			await twikoo.init({
+			await twikooClient.init({
 				envId,
 				el: '#twikoo',
 				region: root.dataset.region || undefined,
 				path: window.location.pathname,
 				lang: 'zh-CN',
 			});
-		} catch {
+		} catch (error) {
+			console.error('Twikoo failed to load:', error);
 			root.dataset.loaded = 'false';
 			root.innerHTML = '<p class="comment-fallback">评论区加载失败，稍后刷新试试。</p>';
 		}
