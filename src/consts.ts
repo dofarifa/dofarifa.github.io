@@ -13,8 +13,6 @@ export const MUSIC_BACKGROUND_VIDEO = '';
 // 首页顶部 Banner 支持 public 目录路径或完整 URL。留空时使用内置轻量动画背景。
 export const HOME_BANNER_VIDEO = '/media/home-banner-optimized.mp4';
 export const HOME_BANNER_POSTER = '/media/home-banner-poster.jpg';
-// 首页标签栏展示项。文章是否归类到这些标签，由 Markdown frontmatter 的 tags 决定。
-export const HOME_TOPIC_TAGS = ['随笔', '故事'] as const;
 // 更换图片时，将新文件放入 src/assets 并修改上方导入路径。
 export const SITE_ICON = avatarImage;
 export const SITE_AVATAR = avatarImage;

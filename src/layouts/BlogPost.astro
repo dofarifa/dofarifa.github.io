@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
+import GitHubIcon from '../components/GitHubIcon.astro';
 import { GITHUB_PROFILE_URL, SITE_AVATAR, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import BaseLayout from './BaseLayout.astro';
 
@@ -82,13 +83,19 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 
 				<aside class="article-sidebar" aria-label="文章侧边栏">
 					<section class="author-card">
-						<div class="author-cover" aria-hidden="true"></div>
-						<Image src={SITE_AVATAR} width={112} height={112} format="webp" quality={82} loading="lazy" alt={`${SITE_TITLE} 的头像`} />
-						<h2>{SITE_TITLE}</h2>
-						<p>{SITE_DESCRIPTION}</p>
-						<a class="author-github" href={GITHUB_PROFILE_URL} target="_blank" rel="noreferrer" aria-label={`打开 ${SITE_TITLE} 的 GitHub 主页`}>
-							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.19-3.37-1.19a2.65 2.65 0 0 0-1.11-1.46c-.91-.62.07-.61.07-.61a2.1 2.1 0 0 1 1.53 1.03 2.13 2.13 0 0 0 2.91.83 2.13 2.13 0 0 1 .63-1.34c-2.22-.25-4.56-1.11-4.56-4.95a3.87 3.87 0 0 1 1.03-2.69 3.6 3.6 0 0 1 .1-2.65s.84-.27 2.75 1.03A9.48 9.48 0 0 1 12 5.97c.85 0 1.7.11 2.5.34 1.9-1.3 2.74-1.03 2.74-1.03.55 1.38.2 2.4.1 2.65a3.86 3.86 0 0 1 1.03 2.69c0 3.85-2.34 4.7-4.57 4.95a2.38 2.38 0 0 1 .68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" /></svg>
-						</a>
+						<div class="author-card-inner">
+							<div class="author-face author-front">
+								<div class="author-cover" aria-hidden="true"></div>
+								<Image src={SITE_AVATAR} width={112} height={112} format="webp" quality={82} loading="lazy" alt={`${SITE_TITLE} 的头像`} />
+								<h2>{SITE_TITLE}</h2>
+								<p>{SITE_DESCRIPTION}</p>
+							</div>
+							<div class="author-face author-back" aria-label="GitHub 链接">
+								<a class="author-github" href={GITHUB_PROFILE_URL} target="_blank" rel="noreferrer" aria-label={`打开 ${SITE_TITLE} 的 GitHub 主页`}>
+									<GitHubIcon />
+								</a>
+							</div>
+						</div>
 					</section>
 					{visibleHeadings.length > 0 && (
 						<nav class="toc-card" aria-label="文章目录">
@@ -137,17 +144,21 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	.article-summary p { margin: .6rem 0 0; color: var(--prose-ink); font-size: .9rem; line-height: 1.85; }
 	.article-body { max-width: 75ch; margin: 0 auto; padding: clamp(1.8rem, 4vw, 3rem) clamp(1rem, 3.5vw, 2.4rem); background: transparent; box-shadow: none; }
 	.article-sidebar { position: sticky; top: 8.2rem; display: grid; gap: .75rem; }
-	.author-card, .toc-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1.15rem; background: var(--surface); box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); }
-	.author-card { position: relative; min-height: 17.5rem; padding: 11rem 1.15rem 1.2rem; contain: paint; isolation: isolate; }
-	.author-card::after { position: absolute; inset: 0; background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 34%), color-mix(in srgb, var(--paper) 26%, transparent); opacity: 0; content: ""; pointer-events: none; transition: opacity .22s ease; will-change: opacity; }
-	.author-card:hover::after, .author-card:focus-within::after { opacity: 1; }
+	.toc-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1.15rem; background: var(--surface); box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); }
+	.author-card { position: relative; min-height: 17.5rem; border-radius: 1.15rem; perspective: 1100px; }
+	.author-card-inner { position: absolute; inset: 0; border-radius: inherit; transform: translateZ(0) rotateY(0deg); transform-style: preserve-3d; transition: transform .64s cubic-bezier(.16, 1, .3, 1); will-change: transform; }
+	.author-card:hover .author-card-inner, .author-card:has(.author-github:focus-visible) .author-card-inner { transform: translateZ(0) rotateY(180deg); }
+	.author-face { position: absolute; inset: 0; overflow: hidden; border: 1px solid var(--line); border-radius: inherit; background: var(--surface); box-shadow: 0 .8rem 2rem color-mix(in srgb, var(--ink) 7%, transparent); backface-visibility: hidden; transform: translateZ(.1px); -webkit-backface-visibility: hidden; }
+	.author-front { padding: 11rem 1.15rem 1.2rem; }
+	.author-back { display: grid; place-items: center; background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 40%), linear-gradient(145deg, var(--surface-lilac), var(--surface)); pointer-events: none; transform: rotateY(180deg) translateZ(.1px); }
+	.author-card:hover .author-front, .author-card:has(.author-github:focus-visible) .author-front { pointer-events: none; }
+	.author-card:hover .author-back, .author-card:has(.author-github:focus-visible) .author-back { pointer-events: auto; }
 	.author-cover { position: absolute; inset: 0 0 auto; height: 9.4rem; background: var(--avatar-card-background); }
 	.author-card img { position: absolute; top: 5.2rem; left: 1.15rem; width: 5.2rem; height: 5.2rem; border: .34rem solid color-mix(in srgb, var(--surface) 90%, transparent); border-radius: 50%; object-fit: cover; box-shadow: var(--shadow); }
 	.author-card h2 { margin: 0; font-size: 1rem; }
 	.author-card p { margin: .35rem 0 0; color: var(--muted); font-size: .74rem; line-height: 1.6; }
-	.author-github { position: absolute; z-index: 2; top: 50%; left: 50%; display: grid; width: 4.4rem; height: 4.4rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--surface) 86%, transparent); color: var(--ink); box-shadow: 0 1rem 2.2rem color-mix(in srgb, var(--ink) 20%, transparent); opacity: 0; transform: translate(-50%, -50%) scale(.86); transition: opacity .2s ease, transform .28s cubic-bezier(.16, 1, .3, 1), background-color .2s ease; pointer-events: none; will-change: opacity, transform; }
-	.author-card:hover .author-github, .author-card:focus-within .author-github { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
-	.author-github:hover { background: var(--accent); color: var(--accent-contrast); transform: translate(-50%, -50%) scale(1.05); }
+	.author-github { display: grid; width: 4.7rem; height: 4.7rem; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--surface) 88%, transparent); color: var(--ink); box-shadow: 0 1rem 2.2rem color-mix(in srgb, var(--ink) 20%, transparent); transition: transform .22s ease, background-color .2s ease, color .2s ease; }
+	.author-github:hover { background: var(--accent); color: var(--accent-contrast); transform: scale(1.05); }
 	.author-github svg { width: 2.45rem; height: 2.45rem; fill: currentColor; }
 	.toc-card { padding: 1.15rem; }
 	.toc-card h2 { margin: 0 0 .65rem; font-size: .98rem; }
@@ -161,7 +172,10 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 	:global([data-theme='dark']) .article-main { background: color-mix(in srgb, var(--surface) 92%, transparent); }
 	:global([data-theme='dark']) .author-cover { background: var(--avatar-card-background); }
 	@media (prefers-reduced-motion: reduce) {
-		.author-card::after, .author-github { transition: none; }
+		.author-card-inner, .author-github { transition: none; }
+		.author-card:hover .author-card-inner, .author-card:has(.author-github:focus-visible) .author-card-inner { transform: none; }
+		.author-back { opacity: 0; transform: none; transition: opacity .15s ease; }
+		.author-card:hover .author-back, .author-card:has(.author-github:focus-visible) .author-back { opacity: 1; }
 	}
 	@media (max-width: 920px) {
 		.article-layout { grid-template-columns: 1fr; }
