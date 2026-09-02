@@ -87,7 +87,7 @@ const earliestYear = posts.length ? Math.min(...posts.map((post) => post.data.pu
 				<section class="profile-card">
 					<div class="profile-card-inner">
 						<div class="profile-face profile-front">
-							<div class="profile-cover"><Image src={SITE_AVATAR} width={144} height={144} format="webp" quality={80} loading="lazy" alt={`${SITE_TITLE} 的头像`} /></div>
+							<div class="profile-cover"><Image src={SITE_AVATAR} width={144} height={144} format="webp" quality={82} loading="eager" fetchpriority="high" decoding="async" alt={`${SITE_TITLE} 的头像`} /></div>
 							<div class="profile-copy">
 								<h2>{SITE_TITLE}</h2>
 								<p>{SITE_DESCRIPTION}</p>

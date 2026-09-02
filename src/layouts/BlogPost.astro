@@ -87,7 +87,7 @@ const visibleHeadings = headings.filter((heading) => heading.depth === 2 || head
 						<div class="author-card-inner">
 							<div class="author-face author-front">
 								<div class="author-cover" aria-hidden="true"></div>
-								<Image src={SITE_AVATAR} width={112} height={112} format="webp" quality={82} loading="lazy" alt={`${SITE_TITLE} 的头像`} />
+								<Image src={SITE_AVATAR} width={144} height={144} format="webp" quality={82} loading="eager" fetchpriority="high" decoding="async" alt={`${SITE_TITLE} 的头像`} />
 								<h2>{SITE_TITLE}</h2>
 								<p>{SITE_DESCRIPTION}</p>
 							</div>
